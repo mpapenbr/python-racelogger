@@ -23,7 +23,7 @@ def read(*names, **kwargs):
 
 setup(
     name='racelogger',
-    version='0.0.0',
+    version='0.1.0',
     license='Apache-2.0',
     description='Racelogger for iRacelog ',
     long_description='%s\n%s' % (
