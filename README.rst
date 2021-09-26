@@ -56,6 +56,11 @@ https://python-racelogger.readthedocs.io/
 Development
 ===========
 
+After checkout you should ensure some development utils with::
+
+    pip install -r requirement_dev.txt
+
+
 To run all the tests run::
 
     tox

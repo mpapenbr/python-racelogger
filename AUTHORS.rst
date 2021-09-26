@@ -2,4 +2,4 @@
 Authors
 =======
 
-* Markus Papenbrock - https://iracing-tools.de
+* Markus Papenbrock
