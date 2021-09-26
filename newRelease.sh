@@ -12,7 +12,7 @@ echo $nextVersion
 PYTHONIOENCODING="UTF-8" BUMP_VERSION="$nextVersion ($(date +%Y-%m-%d))" gitchangelog > CHANGELOG.rst
 git add CHANGELOG.rst
 
-bump2version  $VERSION_PART
+bump2version  --allow-dirty $VERSION_PART
 
 # git commit -m "Bump $currentVersion -> $nextVersion"
 # git tag v$nextVersion -m "Bump $currentVersion -> $nextVersion"
