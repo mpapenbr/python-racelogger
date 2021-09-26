@@ -15,9 +15,15 @@ Why does this file exist, and why not put this in __main__?
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 import click
-
+from racelogger import __version__
 
 @click.command()
-@click.argument('names', nargs=-1)
-def main(names):
-    click.echo(repr(names))
+@click.argument('name', nargs=1)
+@click.option('--config', '-c', default="config.yml", help='use this config file', show_default=True)
+@click.option('--description', help='event description')
+@click.option('--url', help='url of the crossbar server')
+@click.version_option(__version__)
+def main(name,url,config,description):
+    """Record race data as event NAME """
+    click.echo(name)
+
