@@ -1,3 +1,9 @@
+# My own stuff
+env/
+*.spec
+
+# added by cookiecutter from here
+
 *.py[cod]
 __pycache__
 
