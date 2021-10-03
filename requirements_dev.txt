@@ -1,5 +1,6 @@
 pyinstaller
 bump2version
 gitchangelog
-
+flake8
+isort
 
