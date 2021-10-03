@@ -1,0 +1,65 @@
+on:
+  workflow_dispatch:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+
+
+    - name: Prepare bootloader
+      shell: bash
+      # we need this step in order to get a "unique" installer signature that hopefully doesn't produce a virus warning
+      # if this step is not done, many anti virus tools may complain with heuristic virus detection messages
+      # source: https://python.plainenglish.io/pyinstaller-exe-false-positive-trojan-virus-resolved-b33842bd3184
+      run: |
+        pip install wheel
+        CURDIR=$PWD && \
+        mkdir -p tmp && cd tmp && \
+        curl --location --remote-name https://github.com/pyinstaller/pyinstaller/archive/refs/tags/v4.5.1.tar.gz && \
+        tar xfz v4.5.1.tar.gz && \
+        cd pyinstaller-4.5.1/bootloader && \
+        python ./waf all --target-arch=64bit && \
+        cd $CURDIR
+        cd tmp/pyinstaller-4.5.1 && python setup.py install
+
+
+    - name: Build pyinstaller
+      run: |
+        pyinstaller --clean --noconfirm -F src/racelogger/__main__.py --name racelogger
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ./dist/racelogger.exe
+        asset_name: racelogger.exe
+        asset_content_type: application/vnd.microsoft.portable-executable
