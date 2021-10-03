@@ -81,3 +81,19 @@ Note, to combine the coverage data from all the tox environments run:
       - ::
 
             PYTEST_ADDOPTS=--cov-append tox
+
+
+Certificates (Lets encrypt issue on 2021-09-30)
+-----------------------------------------------
+On 2021-09-30 the cert "DST Root CA X3" expired. This was by design but caused some trouble accessing sites with certs issued by letsencrpts.
+Without going into the details it turned out that certain environments had different problems.
+Browsers were fine, most curl requests, too.
+Using Python (3.9) with Windows was tricky. What worked "all the time", stopped to do so and issued a certificate expired error message.
+
+In the end, importing and using *certifi* did the trick.
+
+See also https://community.letsencrypt.org/t/help-thread-for-dst-root-ca-x3-expiration-september-2021/149190/1213
+
+
+
+
