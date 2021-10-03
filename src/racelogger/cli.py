@@ -15,7 +15,9 @@ Why does this file exist, and why not put this in __main__?
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 import click
+
 from racelogger import __version__
+
 
 @click.command()
 @click.argument('name', nargs=1)
