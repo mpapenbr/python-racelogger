@@ -1,3 +1,4 @@
 click==8.0.1
+autobahn>=21
 certifi # may be obsolete with python 3.10
 urllib3
