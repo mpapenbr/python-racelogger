@@ -81,7 +81,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'racelogger = racelogger.cli:main',
+            'racelogger = racelogger.cli:cli',
         ]
     },
 )
