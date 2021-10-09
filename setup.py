@@ -68,6 +68,7 @@ setup(
     install_requires=[
         'click>=8',
         'autobahn>=21',
+        'certifi',
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
