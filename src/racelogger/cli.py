@@ -14,19 +14,23 @@ Why does this file exist, and why not put this in __main__?
 
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
-import click
+import configparser
 import os
-from racelogger import __version__
 
-url = os.environ.get('CBURL', u'ws://host.docker.internal:8080/ws')
-realm = os.environ.get('CBREALM', u'racelog')
+import click
+
+import racelogger.testcon.testloop as testloop
+from racelogger import __version__
+from racelogger.config import Config
+from racelogger.testcon.ping import ping as testPing
+
 
 @click.command()
 # to be removed????
 @click.argument('name', nargs=1)
-@click.option('--config', '-c', default="config.yml", help='use this config file', show_default=True)
-@click.option('--url', help='url of the crossbar server', default=url, show_default=True)
-@click.option('--realm', help='crossbar realm for racelogger ', default=realm, show_default=True)
+@click.option('--config', '-c', default="config.ini", help='use this config file', show_default=True)
+@click.option('--url', help='url of the crossbar server', )
+@click.option('--realm', help='crossbar realm for racelogger ')
 @click.option('--verbose', "-v", help='set verbosity level', count=True)
 @click.version_option(__version__)
 def main(name,url,config,verbose,realm):
@@ -34,15 +38,42 @@ def main(name,url,config,verbose,realm):
 
     verboseLevel = ['info', 'debug', 'trace']
 
-@click.group()
+cp = configparser.ConfigParser()
+cp.read("racelogger.ini")
+defaultSection = cp['DEFAULT']
+configData = {}
+for k in defaultSection.keys():
+    configData[k] = defaultSection[k]
+for section in cp.sections():
+    configData[section] = {k:cp[section][k] for k in cp[section].keys()}
+
+
+CONTEXT_SETTINGS = dict(
+    # default_map={
+    #     'url': 'wss://crossbar.juelps.de/ws',
+    #     'realm': 'racelog',
+
+    #     }
+    default_map=configData
+)
+
+
+@click.group(context_settings=CONTEXT_SETTINGS)
 @click.pass_context
-@click.option('--url', help='url of the crossbar server', default=url, show_default=True)
-@click.option('--realm', help='crossbar realm for racelogger ', default=realm, show_default=True)
+@click.option('--config', help='configuration file', envvar="RACELOG_CONFIG", default="config.ini", show_default=True)
+@click.option('--url', help='url of the crossbar server', envvar="RACELOG_URL", show_default=True)
+@click.option('--realm', help='crossbar realm for racelogger ',show_default=True)
 @click.option('--verbose', "-v", help='set verbosity level', count=True)
 @click.version_option(__version__)
-def cli(ctx,url,realm,verbose):
+def cli(ctx,config,url,realm,verbose):
     """Command line interface for racelogger"""
     ctx.ensure_object(dict)
+    cp = configparser.ConfigParser()
+    cp.read(config)
+    defaultSection = cp['DEFAULT']
+    for k in defaultSection.keys():
+        ctx.default_map[k] = defaultSection[k]
+
     ctx.obj['url'] = url
     ctx.obj['realm'] = realm
     levels = ['info', 'debug', 'trace']
@@ -50,14 +81,32 @@ def cli(ctx,url,realm,verbose):
 
 
 @cli.command()
+@click.option('--user', help='user name to access crossbar realm', required=True)
+@click.option('--password', help='user password  to access crossbar realm', required=True)
 @click.pass_context
-def test(ctx):
+def test(ctx, user, password):
     click.echo(f"testing connection to url={ctx.obj['url']} with logLevel {ctx.obj['logLevel']}")
+    testloop.testLoop(url=ctx.obj['url'], realm=ctx.obj['realm'], logLevel=ctx.obj['logLevel'], extra={'user':user, 'password': password})
+
+@cli.command()
+@click.pass_context
+def ping(ctx):
+    click.echo(f"pinging url={ctx.obj['url']} with logLevel {ctx.obj['logLevel']}")
+    testPing()
 
 @cli.command()
 @click.option('--description', help='event description')
 @click.pass_context
 def record(ctx,description):
     click.echo("recording connection")
+
+@cli.command()
+@click.pass_context
+def config(ctx):
+    cp = configparser.ConfigParser()
+    cp.read('config.ini')
+    print(f"Default: {[k for k in cp['DEFAULT'].keys()]}")
+    print(cp.sections())
+
 
 
