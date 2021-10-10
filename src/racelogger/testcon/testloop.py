@@ -1,7 +1,9 @@
 import asyncio
 import ssl
+import time
 
 import certifi
+import irsdk
 import txaio
 from autobahn.asyncio.wamp import ApplicationRunner
 from autobahn.asyncio.wamp import ApplicationSession
@@ -9,8 +11,12 @@ from autobahn.wamp.exception import ApplicationError
 from autobahn.wamp.types import PublishOptions
 from autobahn.wamp.types import RegisterOptions
 
+from racelogger.model.state import State
+from racelogger.processing.processor import Processor
+
 
 class ClientSession(ApplicationSession):
+
     def onConnect(self):
         self.log.info("Client connected: {klass}", klass=ApplicationSession)
         self.join(self.config.realm, authid=self.config.extra['user'], authmethods=["ticket"])
@@ -21,29 +27,36 @@ class ClientSession(ApplicationSession):
 
 
     async def onJoin(self, details):
-        # await self._init_person_api()
-        await self.producer()
-        self.log.info("after setup producer")
+        state = await self._wait_for_iracing()
+        self.log.info(f"state is {state}")
+        self.processor = Processor(
+            state=state,
+            publisher=lambda data: self.publish(u"racelog.Hallo", data),
+            caller=lambda endpoint,data: self.call(endpoint, data),
+            )
+        await self.demoLoop()
+        self.log.info("after demoLoop")
+        self.disconnect()
 
-    async def producer(self):
-        self.produce = True
+    async def demoLoop(self):
+        self.shouldRun = True
         counter = 0
-        while self.produce:
+        start = time.time()
+        maxtime = self.config.extra['maxtime']
+        while self.shouldRun and self.processor.state.ir_connected:
             try:
-                self.publish(u'racelog.Hallo', counter)
-                counter += 1
-                await asyncio.sleep(1)
-            except KeyboardInterrupt:
-                # try:
-                #     unregister_service()
-                # except:
-                #     pass
-                # press ctrl+c to exit
-                self.log.info("Got interrupted by user. Terminating")
-                self.produce = False
-            except Exception:
-                self.log.info("Some other exception")
+
+                duration = self.processor.step()
+                pause = max(0,1/60-duration)
+                # self.log.info(f"{duration=} {pause=}")
+                await asyncio.sleep(pause)
+                if maxtime != None and (time.time() - start > maxtime):
+                    self.shouldRun = False
+            except Exception as e:
+                self.log.error(f"Some other exception: {e=}")
                 pass
+        # loop ended. if we get here, the connection or the race terminated
+        self.log.info(f"Processing finished. {self.processor.state.ir_connected=}")
 
     def onLeave(self, details):
         self.log.info("Router session closed ({details})", details=details)
@@ -52,6 +65,20 @@ class ClientSession(ApplicationSession):
     def onDisconnect(self):
         self.log.info("Router connection closed")
         asyncio.get_event_loop().stop()
+
+    async def _wait_for_iracing(self):
+        self.log.info("Waiting for iRacing")
+        ir = irsdk.IRSDK()
+        ir.startup()
+        state = State(ir_connected=False, ir=ir)
+
+        while not (ir.is_initialized and ir.is_connected):
+            self.log.debug(f"checking iRacing {ir.is_initialized=} {ir.is_connected=}")
+            await asyncio.sleep(1)
+        self.log.info("Connected to iRacing")
+        state.ir_connected = True
+        return state
+
 
 def testLoop(url:str=None, realm:str=None, logLevel:str='error', extra=None):
     txaio.start_logging(level=logLevel)

@@ -83,10 +83,16 @@ def cli(ctx,config,url,realm,verbose):
 @cli.command()
 @click.option('--user', help='user name to access crossbar realm', required=True)
 @click.option('--password', help='user password  to access crossbar realm', required=True)
+@click.option('--maxtime', help='terminate the test loop after specified seconds', type=int)
 @click.pass_context
-def test(ctx, user, password):
+def test(ctx, user, password, maxtime):
     click.echo(f"testing connection to url={ctx.obj['url']} with logLevel {ctx.obj['logLevel']}")
-    testloop.testLoop(url=ctx.obj['url'], realm=ctx.obj['realm'], logLevel=ctx.obj['logLevel'], extra={'user':user, 'password': password})
+    testloop.testLoop(
+        url=ctx.obj['url'],
+        realm=ctx.obj['realm'],
+        logLevel=ctx.obj['logLevel'],
+        extra={'user':user, 'password': password, 'maxtime': maxtime},
+        )
 
 @cli.command()
 @click.pass_context
