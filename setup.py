@@ -43,8 +43,6 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
-        'Operating System :: Unix',
-        'Operating System :: POSIX',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
@@ -69,6 +67,7 @@ setup(
         'click>=8',
         'autobahn>=21',
         'certifi',
+        "pyirsdk"
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={

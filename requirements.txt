@@ -2,3 +2,4 @@ click>=8.0.1
 autobahn>=21
 certifi
 urllib3
+pyirsdk
