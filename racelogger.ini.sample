@@ -1,0 +1,8 @@
+[DEFAULT]
+url=ws://host.docker.internal:8090/ws
+logLevel=info
+realm=racelog_publish
+
+[test]
+user=datapublisher
+password=EnterPasswordHere

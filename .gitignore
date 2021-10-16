@@ -1,6 +1,7 @@
 # My own stuff
 env/
 *.spec
+racelogger.ini
 
 # added by cookiecutter from here
 
