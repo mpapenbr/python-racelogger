@@ -31,7 +31,7 @@ class ClientSession(ApplicationSession):
         self.log.info(f"state is {state}")
         self.processor = Processor(
             state=state,
-            publisher=lambda data: self.publish(u"racelog.Hallo", data),
+            publisher=lambda data: self.publish("racelog.racedata", data),
             caller=lambda endpoint,data: self.call(endpoint, data),
             )
         await self.demoLoop()
@@ -40,10 +40,9 @@ class ClientSession(ApplicationSession):
 
     async def demoLoop(self):
         self.shouldRun = True
-        counter = 0
         start = time.time()
         maxtime = self.config.extra['maxtime']
-        while self.shouldRun and self.processor.state.ir_connected:
+        while self.shouldRun and self.processor.state.ir.is_connected:
             try:
 
                 duration = self.processor.step()

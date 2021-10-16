@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from irsdk import IRSDK
 
+
 @dataclass
 class State:
     """holds the current state of the recorder"""

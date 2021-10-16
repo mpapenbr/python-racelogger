@@ -1,7 +1,10 @@
 import time
-from dataclasses import dataclass, field
-from racelogger.model.state import State
+from dataclasses import dataclass
+from dataclasses import field
 from typing import Callable
+
+from racelogger.model.state import State
+
 
 @dataclass
 class Processor:
