@@ -116,6 +116,7 @@ class RaceProcessor:
 
     def handle_new_session(self,ir):
         self.subprocessors.msg_proc.clear_buffer()
+
         # self.subprocessors.pit_proc.clear_buffer()
         # state.car_proc.clear_buffer()
         self.session_num = ir['SessionNum']

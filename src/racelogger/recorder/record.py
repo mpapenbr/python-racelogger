@@ -26,7 +26,10 @@ from racelogger.util.utils import collect_event_info
 from racelogger.util.utils import collect_track_info
 
 
-class ClientSession(ApplicationSession):
+class RecordingSession(ApplicationSession):
+    """
+    main class to manage the recording of race data from iRacing telemetry.
+    """
 
     def onConnect(self):
         self.log.info("Client connected: {klass}", klass=ApplicationSession)
@@ -41,8 +44,8 @@ class ClientSession(ApplicationSession):
         state = await self._wait_for_iracing()
         self.log.info(f"state is {state}")
 
-        await self.demoLoop(state)
-        self.log.info("after demoLoop")
+        await self.recordingLoop(state)
+        self.log.info("after recordingLoop")
         self.leave()
 
     async def registerEvent(self, state:RecorderState, car_proc:CarProcessor):
@@ -59,7 +62,7 @@ class ClientSession(ApplicationSession):
                 'car': car_proc.manifest,
                 'session': SessionManifest,
                 'message': MessagesManifest,
-                'pit': []
+                'pit': [] # TODO: remove if removed in backend (not needed anymore)
             },
             'info': self.event_info,
         }
@@ -67,7 +70,7 @@ class ClientSession(ApplicationSession):
         await self.call("racelog.register_provider", register_data)
 
     async def unregisterService(self, state:RecorderState, car_proc:CarProcessor):
-
+        """collect pit boundaries from CarProcessor, send update server and remove us as provider"""
         self.track_info['pit'] = {
             'entry': car_proc.pit_boundaries.pit_entry_boundary.middle,
             'exit': car_proc.pit_boundaries.pit_exit_boundary.middle
@@ -77,10 +80,9 @@ class ClientSession(ApplicationSession):
         await self.call("racelog.remove_provider", state.eventKey)
 
 
-    async def demoLoop(self, state:RecorderState):
+    async def recordingLoop(self, state:RecorderState):
         self.shouldRun = True
-        start = time.time()
-        maxtime = self.config.extra['maxtime']
+
         driver_proc = DriverProcessor(state.ir)
         msg_proc = MessageProcessor(driver_proc)
         car_proc = CarProcessor(driver_proc, state.ir)
@@ -95,18 +97,10 @@ class ClientSession(ApplicationSession):
             )
         while self.shouldRun and self.processor.state.ir.is_connected:
             try:
-
                 duration = self.processor.step()
                 pause = max(0,1/60-duration)
-                if 1==0: # by design. may activate if wanted
-                    if duration > 1/60:
-                        overdue = duration - 1/60
-                        self.log.debug(f"{overdue=} {pause=}")
-                    else:
-                        self.log.debug(f"no overdue, yielding {pause=}")
                 await asyncio.sleep(pause)
-                if maxtime != None and (time.time() - start > maxtime):
-                    self.shouldRun = False
+
             except Exception as e:
                 self.log.error(f"Some other exception: {e=}")
                 pass
@@ -136,7 +130,7 @@ class ClientSession(ApplicationSession):
         return state
 
 
-def testLoop(url:str=None, realm:str=None, logLevel:str='error', extra=None):
+def recorder(url:str=None, realm:str=None, logLevel:str='error', extra=None):
     logging.getLogger('SpeedMapCompute').setLevel(logging.ERROR)
     logging.getLogger('SpeedMap').setLevel(logging.ERROR)
     txaio.start_logging(level=logLevel)
@@ -147,5 +141,5 @@ def testLoop(url:str=None, realm:str=None, logLevel:str='error', extra=None):
     else:
         ssl_context = None
     runner = ApplicationRunner(url=url, realm=realm, extra=extra, ssl=ssl_context)
-    runner.run(ClientSession)
+    runner.run(RecordingSession)
 

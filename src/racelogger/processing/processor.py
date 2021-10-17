@@ -26,7 +26,7 @@ class Processor:
     """container with subprocessors"""
     publisher: Callable[[any],None]
     """is called when data should be send to server"""
-    caller: Callable[[str],None]
+
     lastPublished: float = field(init=False,default=0.0)
     """contains the sessionTime when data was published"""
     lastDI: any = field(init=False, default=None)
@@ -35,6 +35,8 @@ class Processor:
 
     def __post_init__(self):
         self.log = logging.getLogger("MainProcessor")
+        self.raceProcessor.onNewSession = self.postProcessNewSession;
+
 
     def isConnected(self) -> bool:
         return self.state.ir.is_connected
@@ -43,6 +45,7 @@ class Processor:
         """processes one iteration of the loop. assumes to be called if the connection still exists"""
         mark = time.time()
         self.state.ir.freeze_var_buffer_latest()
+        ownProcessingStart = time.time()
         curSessionTime = self.state.ir['SessionTime']
         if curSessionTime == 0.0:
             # there are race situatione where the whole ir-Data are filled with 0 bytes. Get out of here imediately
@@ -63,18 +66,21 @@ class Processor:
         except Exception as e:
             traceback.print_exc(file=sys.stdout)
             self.log.error(f"Some other exception: {e=}")
-
-
+        ownDuration = time.time() - ownProcessingStart
         duration = time.time()-mark
+        # self.log.debug(f"{ownDuration=} {duration=}")
         return duration
 
+    def postProcessNewSession(self, newSessionNum:int):
+        self.log.debug(f"postProcessNewSession called with {newSessionNum}")
+        self.lastPublished = 0
 
     def publish(self):
         sessionData = SessionData(self.state.ir)
         messages = self.subprocessors.msg_proc.manifest_output()
         cars = self.subprocessors.car_proc.manifest_output()
         # pits = state.pit_proc.manifest_output()
-        stateMsg = StateMessage(session = sessionData.manifest_output(), messages=messages, cars=cars)
+        stateMsg = StateMessage(session = sessionData.manifest_output(), messages=messages, cars=cars, pits=[])
         msg = Message(type=MessageType.STATE.value, payload=stateMsg.__dict__)
         self.publisher(msg.__dict__)
         self.subprocessors.msg_proc.clear_buffer()
