@@ -104,7 +104,7 @@ class RecordingSession(ApplicationSession):
             except Exception as e:
                 self.log.error(f"Some other exception: {e=}")
                 pass
-        # loop ended. if we get here, the connection or the race terminated
+        # loop ended. if we get here, the connection or the race is terminated
         self.log.info(f"Processing finished. {self.processor.state.ir_connected=}")
         await self.unregisterService(state, car_proc)
 

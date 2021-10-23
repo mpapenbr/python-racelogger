@@ -48,3 +48,10 @@ def collect_track_info(ir:IRSDK):
     info['sectors'] = ir['SplitTimeInfo']['Sectors']
     # note: pitBoundaries are collected during the race
     return info
+
+def gate(v):
+    if v < 0:
+        return 0
+    if v > 1:
+        return 1
+    return v
