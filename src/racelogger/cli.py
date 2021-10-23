@@ -20,9 +20,9 @@ import os
 import click
 
 import racelogger.testcon.testloop as testloop
+import racelogger.recorder.record as recorder
 from racelogger import __version__
 from racelogger.config import Config
-from racelogger.recorder.record import recorder
 from racelogger.testcon.ping import ping as testPing
 
 
@@ -102,14 +102,18 @@ def ping(ctx):
     testPing()
 
 @cli.command()
+@click.option('--user', help='user name to access crossbar realm', required=True)
+@click.option('--password', help='user password  to access crossbar realm', required=True)
 @click.option('--name', help="name of the recording event.")
 @click.option('--description', help='event description')
+@click.option('--logconfig', help='name of the logging configuration file', default="logging.conf")
 @click.pass_context
-def record(ctx, user, password, name, description):
-    click.echo(f"testing connection to url={ctx.obj['url']} with logLevel {ctx.obj['logLevel']}")
+def record(ctx, user, password, name, description, logconfig):
+    click.echo(f"recording session to url={ctx.obj['url']}")
     recorder.record(
         url=ctx.obj['url'],
         realm=ctx.obj['realm'],
+        logconfig=logconfig,
         logLevel=ctx.obj['logLevel'],
         extra={'user':user, 'password': password, 'name': name, 'description': description},
         )

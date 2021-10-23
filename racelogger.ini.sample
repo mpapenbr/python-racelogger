@@ -3,6 +3,6 @@ url=ws://host.docker.internal:8090/ws
 logLevel=info
 realm=racelog_publish
 
-[test]
+[record]
 user=datapublisher
 password=EnterPasswordHere
