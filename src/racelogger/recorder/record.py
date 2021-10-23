@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import logging
+from logging import config
 import ssl
 import time
 
@@ -79,6 +80,9 @@ class RecordingSession(ApplicationSession):
         await self.call("racelog.store_event_extra_data", state.eventKey, {'track': self.track_info})
         await self.call("racelog.remove_provider", state.eventKey)
 
+    def stopLoop(self):
+        """triggers termination of recording loop"""
+        self.shouldRun = False
 
     async def recordingLoop(self, state:RecorderState):
         self.shouldRun = True
@@ -95,6 +99,8 @@ class RecordingSession(ApplicationSession):
             publisher=lambda data: self.publish(state.publishStateTopic(), data),
 
             )
+
+        self.processor.raceProcessor.onRaceFinished = lambda: self.stopLoop()
         while self.shouldRun and self.processor.state.ir.is_connected:
             try:
                 duration = self.processor.step()
@@ -125,15 +131,18 @@ class RecordingSession(ApplicationSession):
         while not (ir.is_initialized and ir.is_connected):
             self.log.debug(f"checking iRacing {ir.is_initialized=} {ir.is_connected=}")
             await asyncio.sleep(1)
+        self.log.debug("DEBUG-Connected to iRacing")
         self.log.info("Connected to iRacing")
         state.ir_connected = True
         return state
 
 
-def recorder(url:str=None, realm:str=None, logLevel:str='error', extra=None):
-    logging.getLogger('SpeedMapCompute').setLevel(logging.ERROR)
-    logging.getLogger('SpeedMap').setLevel(logging.ERROR)
+def record(url:str=None, realm:str=None, logLevel:str='error', logconfig="logging.conf", extra=None):
+    # logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    # logging.getLogger('SpeedMapCompute').setLevel(logging.ERROR)
+    # logging.getLogger('SpeedMap').setLevel(logging.ERROR)
     txaio.start_logging(level=logLevel)
+    config.fileConfig(logconfig)
     # we need this for letsencrypt certs.
     # see https://community.letsencrypt.org/t/help-thread-for-dst-root-ca-x3-expiration-september-2021/149190/1213
     if url.startswith("wss://"):

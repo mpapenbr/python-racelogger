@@ -38,6 +38,8 @@ class RaceProcessor:
     """holds the current session num (uses for resets and the like during testing)"""
     onNewSession: Callable[[int],None] = None
     """if present this will be called if a new session num is detected"""
+    onRaceFinished: Callable[[],None] = None
+    """if present this will be called if the race is considered to be finished"""
 
     def __post_init__(self):
         self.on_init_ir_state = self.recorderState.ir['SessionState'] # used for "race starts" message
@@ -82,8 +84,8 @@ class RaceProcessor:
 
     def state_finishing(self,ir):
         if ir['SessionState'] == irsdk.SessionState.cool_down:
-            # TODO: at this point the last car may not be processed in the standings. check when time
-            # idea: separate into two state: cooldown_issued. after  5s  all missing data should be processed. After that terminate.
+            # at this point the last car may not be processed in the standings.
+            # signal a cooldown. this will give us a little more time until the final standings arrive
             self.subprocessors.car_proc.process(ir, self.subprocessors.msg_proc)
             self.logger.info(f'cooldown signaled - get out of here')
             self.state = RaceStates.COOLDOWN
@@ -108,11 +110,11 @@ class RaceProcessor:
     def state_terminate(self, ir ):
         # TODO: think about shutting down only when specific config attribute is set to do so ;)
         # for now it is ok.
-        self.logger.info(f'unregister service')
-        # unregister_service()
-        self.logger.info(f'unregister called')
-        system.exit(0)
-        self.logger.error(f'should not see this')
+        self.logger.info(f'race is finished. check if callback is present')
+        if (self.onRaceFinished):
+            self.logger.info(f'callback is present. perform callback')
+            self.onRaceFinished()
+
 
     def handle_new_session(self,ir):
         self.subprocessors.msg_proc.clear_buffer()
