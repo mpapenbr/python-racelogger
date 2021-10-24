@@ -2,6 +2,7 @@
 env/
 *.spec
 racelogger.ini
+*.log
 
 # added by cookiecutter from here
 
