@@ -19,8 +19,8 @@ import os
 
 import click
 
-import racelogger.testcon.testloop as testloop
 import racelogger.recorder.record as recorder
+import racelogger.testcon.testloop as testloop
 from racelogger import __version__
 from racelogger.config import Config
 from racelogger.testcon.ping import ping as testPing
@@ -61,7 +61,7 @@ CONTEXT_SETTINGS = dict(
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.pass_context
-@click.option('--config', help='configuration file', envvar="RACELOG_CONFIG", default="config.ini", show_default=True)
+@click.option('--config', help='configuration file', envvar="RACELOG_CONFIG", default="racelogger.ini", show_default=True)
 @click.option('--url', help='url of the crossbar server', envvar="RACELOG_URL", show_default=True)
 @click.option('--realm', help='crossbar realm for racelogger ',show_default=True)
 @click.option('--verbose', "-v", help='set verbosity level', count=True)

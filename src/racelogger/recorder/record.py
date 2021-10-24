@@ -1,9 +1,9 @@
 import asyncio
 import hashlib
 import logging
-from logging import config
 import ssl
 import time
+from logging import config
 
 import certifi
 import irsdk
