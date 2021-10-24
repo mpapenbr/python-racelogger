@@ -26,7 +26,7 @@ To use racelogger in a project::
 
 Execution
 ---------
-Executing the programm without any parameters will show the usage of the programm::
+Executing the program without any parameters will show the usage of the program::
 
     c:\racelogger> racelogger
     Usage: racelogger [OPTIONS] COMMAND [ARGS]...
@@ -48,7 +48,7 @@ Executing the programm without any parameters will show the usage of the program
 
 Recording
 ---------
-In order to record a race the record use the record command::
+In order to record a race use the *record* command::
 
     c:\racelogger> racelogger record --help
     Usage: racelogger record [OPTIONS]
@@ -63,7 +63,7 @@ In order to record a race the record use the record command::
 
 The parameters *name* and *description* will be used in the frontend to give some information about the race. Here is an example for the recording::
 
-    c:\racelogger> racelogger record --name "NEO 2021/21 Hockenheim 6h"--description "Event 1 from 24h Series 2021/22"
+    c:\racelogger> racelogger record --name "NEO 2021/22 Hockenheim 6h"--description "Event 1/6"
 
 .. Note:: The values of the missing options are retrieved from the *racelogger.ini* configuration file. (see below)
 
