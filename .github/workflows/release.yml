@@ -67,7 +67,7 @@ jobs:
         mkdir -p assets && \
         cp ./dist/racelogger.exe assets && \
         cp ./racelogger.ini.sample assets/racelogger.ini && \
-        cp ./logging.conf assets/logging.conf && \
+        cp ./logging.conf assets/logging.conf
 
     - name: Create zip
       uses: papeloto/action-zip@v1
