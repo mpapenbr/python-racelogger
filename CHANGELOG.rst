@@ -2,6 +2,19 @@ Changelog
 =========
 
 
+v0.2.0 (2021-10-29)
+-------------------
+
+New
+~~~
+- Client commands ping and record. [mpapenbr]
+- Usage. [mpapenbr]
+
+Changes
+~~~~~~~
+- Default racelog.ini. [mpapenbr]
+
+
 v0.1.0 (2021-09-26)
 -------------------
 
