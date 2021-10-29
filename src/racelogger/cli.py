@@ -81,7 +81,7 @@ def cli(ctx,config,url,realm,verbose):
     ctx.obj['logLevel'] = levels[min(verbose,len(levels)-1)]
 
 
-@cli.command()
+# @cli.command()
 @click.option('--user', help='user name to access crossbar realm', required=True)
 @click.option('--password', help='user password  to access crossbar realm', required=True)
 @click.option('--maxtime', help='terminate the test loop after specified seconds', type=int)
@@ -118,7 +118,7 @@ def record(ctx, user, password, name, description, logconfig):
         extra={'user':user, 'password': password, 'name': name, 'description': description},
         )
 
-@cli.command()
+#@cli.command()
 @click.pass_context
 def config(ctx):
     cp = configparser.ConfigParser()
