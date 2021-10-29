@@ -1,7 +1,7 @@
 [DEFAULT]
-url=ws://host.docker.internal:8090/ws
+url=wss://crossbar.juelps.de/ws
 logLevel=info
-realm=racelog_publish
+realm=racelog
 
 [record]
 user=datapublisher
