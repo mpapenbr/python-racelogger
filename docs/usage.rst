@@ -65,11 +65,21 @@ The parameters *name* and *description* will be used in the frontend to give som
 
     c:\racelogger> racelogger record --name "NEO 2021/22 Hockenheim 6h"--description "Event 1/6"
 
-.. Note:: The values of the missing options are retrieved from the *racelogger.ini* configuration file. (see below)
-
 .. Tip:: Use double quotes (") around values containing blanks and/or other special characters.
 
-.. Note:: When recording you should **not** use the iRacing replay function. Some telemetry values will be invalidated when the replay mode is active. In such cases the racelogger may produce invalid data.
+.. Note::
+
+   - The values of the missing options are retrieved from the *racelogger.ini* configuration file. (see below)
+
+   - When recording you should **not** use the iRacing replay function. Some telemetry values will be invalidated when the replay mode is active. In such cases the racelogger may produce invalid data.
+   - It is strongly recommended to join as Spectator via the Watch button when recording a race.
+     Recording a race while driving result in missing data.
+
+     Even though the configured MaxCars setting in iRacing is set to 63 iRacing does not gurantee to send data for all cars.
+     Especially during driving **and** recording missing data for cars occured in bigger fields.
+
+     This problem was spotted during recording a 40+ cars field with MaxCars 64 and Draw 40/20 setting.
+
 
 Configuration
 -------------
