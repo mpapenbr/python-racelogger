@@ -58,7 +58,7 @@ class RecordingSession(ApplicationSession):
         racelog_event_key = hashlib.md5(state.ir['WeekendInfo'].__repr__().encode('utf-8')).hexdigest()
         state.eventKey = racelog_event_key
         register_data = {
-            'id': racelog_event_key,
+            'eventKey': racelog_event_key,
             'manifests': {
                 'car': car_proc.manifest,
                 'session': SessionManifest,
@@ -66,9 +66,10 @@ class RecordingSession(ApplicationSession):
                 'pit': [] # TODO: remove if removed in backend (not needed anymore)
             },
             'info': self.event_info,
+            'trackInfo': self.track_info
         }
         # TODO: refactor with new backend endpoint
-        await self.call("racelog.register_provider", register_data)
+        await self.call("racelog.dataprovider.register_provider", register_data)
 
     async def unregisterService(self, state:RecorderState, car_proc:CarProcessor):
         """collect pit boundaries from CarProcessor, send update server and remove us as provider"""
@@ -77,8 +78,8 @@ class RecordingSession(ApplicationSession):
             'exit': car_proc.pit_boundaries.pit_exit_boundary.middle
         }
         # TODO: refactor with new backend endpoints
-        await self.call("racelog.store_event_extra_data", state.eventKey, {'track': self.track_info})
-        await self.call("racelog.remove_provider", state.eventKey)
+        await self.call("racelog.dataprovider.store_event_extra_data", state.eventKey, {'track': self.track_info})
+        await self.call("racelog.dataprovider.remove_provider", state.eventKey)
 
     def stopLoop(self):
         """triggers termination of recording loop"""

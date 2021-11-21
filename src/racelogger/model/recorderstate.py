@@ -17,7 +17,7 @@ class RecorderState:
     def publishStateTopic(self) -> str:
         """return the publish topic for the recording event"""
         # TODO: change the topic once the backend is adjusted
-        return f"racelog.state.{self.eventKey}"
+        return f"racelog.public.live.state.{self.eventKey}"
 
 
 
