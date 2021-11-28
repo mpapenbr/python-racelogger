@@ -32,15 +32,16 @@ jobs:
       # if this step is not done, many anti virus tools may complain with heuristic virus detection messages
       # source: https://python.plainenglish.io/pyinstaller-exe-false-positive-trojan-virus-resolved-b33842bd3184
       run: |
-        pip install wheel
+        pip install wheel \
+        PYI_VERSION=4.7
         CURDIR=$PWD && \
         mkdir -p tmp && cd tmp && \
-        curl --location --remote-name https://github.com/pyinstaller/pyinstaller/archive/refs/tags/v4.5.1.tar.gz && \
-        tar xfz v4.5.1.tar.gz && \
-        cd pyinstaller-4.5.1/bootloader && \
+        curl --location --remote-name https://github.com/pyinstaller/pyinstaller/archive/refs/tags/v$PYI_VERSION.tar.gz && \
+        tar xfz v$PYI_VERSION.tar.gz && \
+        cd pyinstaller-$PYI_VERSION/bootloader && \
         python ./waf all --target-arch=64bit && \
         cd $CURDIR
-        cd tmp/pyinstaller-4.5.1 && python setup.py install
+        cd tmp/pyinstaller-$PYI_VERSION && python setup.py install
 
     - name: do local install
       run: |
