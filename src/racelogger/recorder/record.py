@@ -77,7 +77,7 @@ class RecordingSession(ApplicationSession):
             'entry': car_proc.pit_boundaries.pit_entry_boundary.middle,
             'exit': car_proc.pit_boundaries.pit_exit_boundary.middle
         }
-        # TODO: refactor with new backend endpoints
+
         await self.call("racelog.dataprovider.store_event_extra_data", state.eventKey, {'track': self.track_info})
         await self.call("racelog.dataprovider.remove_provider", state.eventKey)
 

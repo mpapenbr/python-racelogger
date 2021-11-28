@@ -4,5 +4,5 @@ logLevel=info
 realm=racelog
 
 [record]
-user=datapublisher
+user=dataprovider
 password=EnterPasswordHere
