@@ -2,6 +2,18 @@ Changelog
 =========
 
 
+v0.3.0 (2021-11-28)
+-------------------
+
+New
+~~~
+- Adapt to new wamp endpoints. [mpapenbr]
+
+Changes
+~~~~~~~
+- Pitfalls for recording. [mpapenbr]
+
+
 v0.2.0 (2021-10-29)
 -------------------
 
