@@ -32,7 +32,7 @@ jobs:
       # if this step is not done, many anti virus tools may complain with heuristic virus detection messages
       # source: https://python.plainenglish.io/pyinstaller-exe-false-positive-trojan-virus-resolved-b33842bd3184
       run: |
-        export PYI_VERSION=4.7
+        export PYI_VERSION=4.7 \
         pip install wheel \
         CURDIR=$PWD && \
         mkdir -p tmp && cd tmp && \
