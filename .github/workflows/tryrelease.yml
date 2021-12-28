@@ -44,8 +44,10 @@ jobs:
       run: |
         pip install -e .
 
-    - name: Build pyinstaller
+
+    - name: Build with pyinstaller
       run: |
+        pip install pyinstaller
         pyinstaller --clean --noconfirm --name racelogger --onefile src/racelogger/__main__.py
         pyinstaller --clean --noconfirm --distpath dist2 --name racelogger --onedir src/racelogger/__main__.py
 
