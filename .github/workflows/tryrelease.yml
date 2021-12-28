@@ -1,0 +1,93 @@
+on:
+  workflow_dispatch:
+
+
+name: Test workflow for producing release artifacts
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+        architecture: 'x64'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+
+
+    - name: Prepare bootloader
+      shell: bash
+      # we need this step in order to get a "unique" installer signature that hopefully doesn't produce a virus warning
+      # if this step is not done, many anti virus tools may complain with heuristic virus detection messages
+      # source: https://python.plainenglish.io/pyinstaller-exe-false-positive-trojan-virus-resolved-b33842bd3184
+      run: |
+        pip install wheel
+        export PYI_VERSION=4.7
+        CURDIR=$PWD && \
+        mkdir -p tmp && cd tmp && \
+        curl --location --remote-name https://github.com/pyinstaller/pyinstaller/archive/refs/tags/v$PYI_VERSION.tar.gz && \
+        tar xfz v$PYI_VERSION.tar.gz && \
+        cd pyinstaller-$PYI_VERSION/bootloader && \
+        python ./waf all --target-arch=64bit && \
+        cd $CURDIR
+        cd tmp/pyinstaller-$PYI_VERSION && python setup.py install
+
+    - name: do local install
+      run: |
+        pip install -e .
+
+    - name: Build pyinstaller
+      run: |
+        pyinstaller --clean --noconfirm --name racelogger --onefile src/racelogger/__main__.py
+        pyinstaller --clean --noconfirm --distpath dist2 --name racelogger --onedir src/racelogger/__main__.py
+
+
+    - name: Prepare single exe release asset
+      shell: bash
+      run: |
+        mkdir -p assets && \
+        cp ./dist/racelogger.exe assets && \
+        cp ./racelogger.ini.sample assets/racelogger.ini && \
+        cp ./logging.conf assets/logging.conf
+
+    - name: Prepare release asset for dir
+      shell: bash
+      run: |
+        mkdir -p assets2 && \
+        cp -R ./dist2/* assets2 && \
+        cp ./racelogger.ini.sample assets2/racelogger.ini && \
+        cp ./logging.conf assets2/logging.conf
+
+    - name: Create single exe zip
+      uses: papeloto/action-zip@v1
+      with:
+        files: assets/
+        dest: racelogger-exe.zip
+        recursive: true # note: may be a bug. see https://github.com/vimtor/action-zip/issues/8
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: single-exe-artifact
+        path: ${{ github.workspace }}/racelogger-exe.zip
+
+    - name: Create dir zip
+      uses: papeloto/action-zip@v1
+      with:
+        files: assets2/
+        dest: racelogger.zip
+        recursive: false # note: may be a bug. see https://github.com/vimtor/action-zip/issues/8
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: standard-artifact
+        path: ${{ github.workspace }}/racelogger.zip
+
+
