@@ -1,10 +1,11 @@
 from irsdk import Flags
 from irsdk import SessionState
 
-SessionManifest = ['sessionTime', 'timeRemain', 'lapsRemain', 'flagState', 'timeOfDay', 'airTemp', 'airDensity', 'airPressure', 'trackTemp', 'windDir', 'windVel']
+SessionManifest = ['sessionNum','sessionTime', 'timeRemain', 'lapsRemain', 'flagState', 'timeOfDay', 'airTemp', 'airDensity', 'airPressure', 'trackTemp', 'windDir', 'windVel']
 
 class SessionData:
     def __init__(self, ir) -> None:
+        self.sessionNum = ir['SessionNum']
         self.sessionTime = ir['SessionTime']
         self.timeRemain = ir['SessionTimeRemain']
         self.lapsRemain = ir['SessionLapsRemainEx']
