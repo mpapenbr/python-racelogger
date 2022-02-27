@@ -32,7 +32,28 @@ def collect_event_info(ir:IRSDK, name:str=None, description:str=None):
     else:
         info['name'] = name
     info['description'] = description
+    info['sessions'] = collect_session_info(ir)
     return info
+
+def collect_session_info(ir:IRSDK):
+    def extract_laps(laps):
+        if laps == 'unlimited':
+            return -1
+        else:
+            return int(laps)
+
+    def extract_time(arg):
+        m = re.search(r'(?P<sec>(\d+\.\d+)) sec', arg)
+        return int(float(m.group('sec')))
+
+    return [{
+        'num': x['SessionNum'],
+        'name': x['SessionName'],
+        'type': x['SessionType'],
+        'laps': extract_laps(x['SessionLaps']),
+        'time': extract_time(x['SessionTime']),
+    } for x in ir['SessionInfo']['Sessions']]
+
 
 def collect_track_info(ir:IRSDK):
     """
