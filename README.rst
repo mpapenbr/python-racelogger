@@ -22,9 +22,9 @@ Overview
     :alt: Coverage Status
     :target: https://codecov.io/github/mpapenbr/python-racelogger
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/mpapenbr/python-racelogger/v0.3.6.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/mpapenbr/python-racelogger/v0.4.0.svg
     :alt: Commits since latest release
-    :target: https://github.com/mpapenbr/python-racelogger/compare/v0.3.6...master
+    :target: https://github.com/mpapenbr/python-racelogger/compare/v0.4.0...master
 
 
 

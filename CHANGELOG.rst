@@ -2,6 +2,25 @@ Changelog
 =========
 
 
+v0.4.0 (2022-03-06)
+-------------------
+
+New
+~~~
+- Add raceloggerVersion into event_info. [mpapenbr]
+- Add session info into event_info. [mpapenbr]
+
+Changes
+~~~~~~~
+- Adjusted racelogger.ini.sample to new user. [mpapenbr]
+
+Other
+~~~~~
+- Merge pull request #7 from mpapenbr:mpapenbr/issue4. [mpapenbr]
+
+  extend event info with session info
+
+
 v0.3.0 (2021-11-28)
 -------------------
 

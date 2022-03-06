@@ -20,7 +20,7 @@ project = 'racelogger'
 year = '2021'
 author = 'Markus Papenbrock'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '0.3.6'
+version = release = '0.4.0'
 
 pygments_style = 'trac'
 templates_path = ['.']
