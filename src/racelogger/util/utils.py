@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 
 from irsdk import IRSDK
-
+from racelogger import __version__ as racelogger_version
 
 def get_track_length_in_meters(arg:str) -> float:
     milesInKm = 1.60934
@@ -16,6 +16,7 @@ def get_track_length_in_meters(arg:str) -> float:
 def collect_event_info(ir:IRSDK, name:str=None, description:str=None):
     """creates a dict with selected event information from iRacing telemetry"""
     info = {}
+    info['raceloggerVersion'] = racelogger_version
     wi = ir['WeekendInfo']
     info['trackId'] = wi['TrackID']
     info['teamRacing'] =wi['TeamRacing']
