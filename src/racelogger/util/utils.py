@@ -2,7 +2,9 @@ import re
 from datetime import datetime
 
 from irsdk import IRSDK
+
 from racelogger import __version__ as racelogger_version
+
 
 def get_track_length_in_meters(arg:str) -> float:
     milesInKm = 1.60934
