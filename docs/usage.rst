@@ -17,13 +17,6 @@ logging.conf   Logger configuration
 ============== ====================
 
 
-Python module
--------------
-
-To use racelogger in a project::
-
-	import racelogger
-
 Execution
 ---------
 Executing the program without any parameters will show the usage of the program::
@@ -71,20 +64,40 @@ The parameters *name* and *description* will be used in the frontend to give som
 
    The values of the missing options are retrieved from the *racelogger.ini* configuration file. (see below)
 
+.. Note::
+
+   - Make sure you have set MaxCars to 63 in iRacing. This setting defines the amount of cars for which the iRacing server transfers data to the iRacing simulator.
+
+     In order to get a complete race overview we need the data for all cars. Note, this setting is just for the data transfer.
+
+     You find this setting in the iRacing simulator at Options -> Graphic
+
+    .. image:: max-cars.png
+
+   - Make sure you have the highest available connection type setting active. You find this in your `iRacing account page <https://members.iracing.com/membersite/account/Home.do>`_ in the preferences section.
+
+     The setting **DSL, Cable, Fiber, 1MBit/sec or faster** seems to work best without losing any data.
+
+     .. image:: account-settings.png
+
+     When using a smaller value this may cause iRacing to send fewer car data at times which in turn causes the racelogger to assume that a car is offline and mark it as OUT during the period when no data is recieved for a particular car.
+
+
+
+
 .. Warning::
 
    - When recording you should **not** use the iRacing replay function. Some telemetry values will be invalidated when the replay mode is active. In such cases the racelogger may produce invalid data.
-   - It is strongly recommended to join as Spectator via the Watch button when recording a race.
-     Recording a race while driving result in missing data.
 
-     Even though the configured MaxCars setting in iRacing is set to 63 iRacing does not guarantee that data for all cars are available.
-     Especially during driving **and** recording missing data for cars occured in bigger fields.
 
-     This problem was spotted during recording a 40+ cars field with MaxCars 64 and Draw 40/20 setting.
 
 
 Configuration
 -------------
+
+This is a sample configuration which is used for my own iRacelogger backend. When running your own iRacelogger backend you need to adapt the url parameter.
+
+TODO: link to the big picture
 
 racelogger.ini
 ^^^^^^^^^^^^^^
@@ -96,6 +109,6 @@ racelogger.ini
     realm=racelogger
 
     [record]
-    user=datapublisher
+    user=dataprovider
     password=EnterPasswordHere
 
