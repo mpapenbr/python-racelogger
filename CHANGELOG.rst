@@ -2,6 +2,23 @@ Changelog
 =========
 
 
+v0.4.1 (2022-05-21)
+-------------------
+
+New
+~~~
+- More detailed usage, some cleanup. [mpapenbr]
+
+Fix
+~~~
+- Marking of best laps gets lost on changes. [mpapenbr]
+
+Other
+~~~~~
+- Merge branch 'master' of github.com:mpapenbr/python-racelogger.
+  [mpapenbr]
+
+
 v0.4.0 (2022-03-06)
 -------------------
 
