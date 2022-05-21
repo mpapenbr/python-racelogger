@@ -122,6 +122,7 @@ class CarData:
         self.driver_proc = driver_proc
         self.lap_timings = CarLaptiming(num_sectors=num_sectors)
         self.pit_boundaries = pit_boundaries
+        self.marker_info = (-1,"") # lapNo/marker
 
 
         self.processState = CarState.INIT
