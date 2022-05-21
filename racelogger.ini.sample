@@ -1,5 +1,5 @@
 [DEFAULT]
-url=wss://crossbar.juelps.de/ws
+url=wss://crossbar.iracing-tools.de/ws
 logLevel=info
 realm=racelog
 

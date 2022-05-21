@@ -146,19 +146,33 @@ class CarProcessor():
                 duration = work.lap_timings.lap.duration
                 work.last = duration
             else:
-                work.last = duration
                 if duration < self.overall_best_lap:
                     ob_idx = line['CarIdx']
                     work.current_best = duration
+                    work.marker_info = (line['LapsComplete'], "ob")
+                    # if there are any other ob-laps, degrade them to pb
+                    for check_other in self.lookup.values():
+                        if type(check_other.last) is list and check_other.last[1] == "ob":
+                            check_other.last[1] = "pb"
+
                     self.overall_best_lap = duration
                 elif duration < work.current_best:
                     work.last = [duration, "pb"]
                     work.current_best = duration
+                    work.marker_info = (line['LapsComplete'], "pb")
                     msg_proc.add_timing_info(line['CarIdx'], f'personal new best lap {laptimeStr(duration)}')
+                else:
+                    if work.marker_info[0] == line['LapsComplete'] and work.marker_info[1] != "":
+                        work.last = [duration, work.marker_info[1]]
+                    else:
+                        work.last = duration
 
         if ob_idx != None:
             work = self.lookup.get(ob_idx)
             duration = getattr(work, 'last')
+            if type(duration) is list:
+                # msg_proc.add_timing_info(ob_idx, f'strange: {duration}')
+                duration = duration[0]
             work.last = [duration , "ob"]
             msg_proc.add_timing_info(ob_idx, f'new overall best lap {laptimeStr(duration)}')
 
