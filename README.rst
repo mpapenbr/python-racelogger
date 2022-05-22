@@ -43,6 +43,15 @@ After checkout you should ensure some development utils with::
 
     pip install -r requirement_dev.txt
 
+The generic (without version restrictions, if possible) should be installed via
+
+    pip install -r requirement_generic.txt
+
+The build process uses the requirements.txt. This file is produced via
+
+    pip freeze > requirements.txt
+
+When new versions are available the
 
 To run all the tests run::
 

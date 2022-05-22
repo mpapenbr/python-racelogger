@@ -47,7 +47,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         # uncomment if you test on these interpreters:
         # 'Programming Language :: Python :: Implementation :: IronPython',
         # 'Programming Language :: Python :: Implementation :: Jython',
@@ -62,10 +62,10 @@ setup(
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
-    python_requires='>=3.9',
+    python_requires='>=3.10',
     install_requires=[
         'click>=8',
-        'autobahn>=21,<22',
+        'autobahn==22.3.2',
         'certifi',
         "pyirsdk"
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
