@@ -137,6 +137,7 @@ class CarProcessor():
             work.pic = line['ClassPosition']
             work.gap = line['Time']
             work.best = line['FastestTime']
+            work.lastRaw = line['LastTime']
             duration = line['LastTime']
             if duration == None:
                 # first lap, car may not crossed the line yet
@@ -149,11 +150,15 @@ class CarProcessor():
                 if duration < self.overall_best_lap:
                     ob_idx = line['CarIdx']
                     work.current_best = duration
+                    work.last = [duration, "ob"]
                     work.marker_info = (line['LapsComplete'], "ob")
                     # if there are any other ob-laps, degrade them to pb
                     for check_other in self.lookup.values():
-                        if type(check_other.last) is list and check_other.last[1] == "ob":
+                        if type(check_other.last) is list and check_other.marker_info[1] == "ob" and check_other.carIdx != ob_idx:
+                            self.logger.info(f"resetting ob to pb for {check_other.carIdx}-{check_other.carNum}")
+                            check_other.marker_info = (line['LapsComplete'], "pb")
                             check_other.last[1] = "pb"
+
 
                     self.overall_best_lap = duration
                 elif duration < work.current_best:
@@ -166,6 +171,7 @@ class CarProcessor():
                         work.last = [duration, work.marker_info[1]]
                     else:
                         work.last = duration
+                        work.marker_info = (-1,"")
 
         if ob_idx != None:
             work = self.lookup.get(ob_idx)
