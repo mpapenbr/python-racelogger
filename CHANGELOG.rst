@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+v0.4.3 (2022-05-22)
+-------------------
+
+Fix
+~~~
+- Revisited marking of ob/pb. [mpapenbr]
+
+
 v0.4.2 (2022-05-21)
 -------------------
 - Pkg: stay on autobahn 21. [mpapenbr]
