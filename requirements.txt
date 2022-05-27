@@ -27,7 +27,7 @@ pycodestyle==2.8.0
 pycparser==2.21
 pyflakes==2.4.0
 pyinstaller==5.1
-pyinstaller-hooks-contrib==2022.5
+pyinstaller-hooks-contrib==2022.6
 pyirsdk==1.3.2
 pyparsing==3.0.9
 pytest==7.1.2
