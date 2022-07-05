@@ -1,7 +1,7 @@
 altgraph==0.17.2
 atomicwrites==1.4.0
 attrs==21.4.0
-autobahn==22.5.1
+autobahn==22.6.1
 bump2version==1.0.1
 certifi==2022.6.15
 cffi==1.15.0
