@@ -22,6 +22,9 @@ def collect_event_info(ir:IRSDK, name:str=None, description:str=None):
     wi = ir['WeekendInfo']
     info['trackId'] = wi['TrackID']
     info['teamRacing'] =wi['TeamRacing']
+    info['multiClass'] =wi['NumCarClasses'] > 1
+    info['numCarClasses'] =wi['NumCarClasses']
+    info['numCarTypes'] =wi['NumCarTypes']
     info['irSessionId'] = wi['SessionID']
     info['trackDisplayName'] = wi['TrackDisplayName']
     info['trackDisplayShortName'] = wi['TrackDisplayShortName']

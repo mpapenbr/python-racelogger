@@ -65,6 +65,12 @@ class CarProcessor():
         self.sectors = current_ir['SplitTimeInfo']['Sectors'];
         self.manifest = manifest + [f's{x+1}' for x in range(len(self.sectors))]
 
+        if current_ir['WeekendInfo']['TeamRacing'] == 0:
+            self.manifest.remove('teamName')
+        if current_ir['WeekendInfo']['NumCarClasses'] == 1:
+            self.manifest.remove('carClass')
+        
+
         self.overall_best_sectors = [sys.maxsize for x in range(len(self.sectors))]
         self.overall_best_lap = sys.maxsize
         self.class_best_laps = [] # todo!
