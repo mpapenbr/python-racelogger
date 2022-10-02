@@ -90,7 +90,7 @@ class ClientSession(ApplicationSession):
             state=state,
             subprocessors=subprocessors,
             raceProcessor=RaceProcessor(recorderState=state,subprocessors=subprocessors),
-            publisher=lambda data: self.publish(state.publishStateTopic(), data),
+            state_publisher=lambda data: self.publish(state.publishStateTopic(), data),
 
             )
         while self.shouldRun and self.processor.state.ir.is_connected:

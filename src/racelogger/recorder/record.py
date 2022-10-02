@@ -97,7 +97,9 @@ class RecordingSession(ApplicationSession):
             state=state,
             subprocessors=subprocessors,
             raceProcessor=RaceProcessor(recorderState=state,subprocessors=subprocessors),
-            publisher=lambda data: self.publish(state.publishStateTopic(), data),
+            state_publisher=lambda data: self.publish(state.publishStateTopic(), data),
+            driver_publisher=lambda data: self.publish(state.publishDriverTopic(), data),
+            speedmap_publisher=lambda data: self.publish(state.publishSpeedmapTopic(), data),
 
             )
 

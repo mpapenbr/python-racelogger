@@ -10,6 +10,9 @@ class DataType(Enum):
 class MessageType(Enum):
     EMPTY = 0
     STATE = 1
+    DRIVER = 2
+    SPEEDMAP = 3
+
 
 
 class Message:
