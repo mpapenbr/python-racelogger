@@ -78,6 +78,7 @@ class SpeedMap:
         self.track_length = track_length
         self.chunk_size=chunk_size
         self.num_chunks = math.ceil(self.track_length / self.chunk_size)
+        self.track_pos = 0
         self.logger = logging.getLogger(self.__class__.__name__)
         self.datalogger = logging.getLogger(self.__class__.__name__ + 'Data')
         self.computelogger = logging.getLogger(self.__class__.__name__ + 'Compute')
@@ -115,7 +116,7 @@ class SpeedMap:
             return idx
 
     def process(self, track_pos, speed, car_class_id):
-
+        self.track_pos = track_pos 
         chunk_idx = self.__get_chunk_idx(track_pos)
         car_class_chunks = self.car_classes_dict.get(car_class_id)
         if car_class_chunks == None:
@@ -168,7 +169,15 @@ class SpeedMap:
         return total_delta
 
 
+    def output_data(self) -> dict:
 
+        ret = {
+            'trackLength': self.track_length,
+            'chunkSize': self.chunk_size,
+            'currentPos': self.track_pos,
+            'data': {k:[lv.avg for lv in v] for k,v in self.car_classes_dict.items()},
+            }
+        return ret
 
 
 
