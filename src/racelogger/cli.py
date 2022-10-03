@@ -106,16 +106,17 @@ def ping(ctx):
 @click.option('--password', help='user password  to access crossbar realm', required=True)
 @click.option('--name', help="name of the recording event.")
 @click.option('--description', help='event description')
+@click.option('--speedmap', help='interval (in seconds) for sending the speedmap', type=int, default=60)
 @click.option('--logconfig', help='name of the logging configuration file', default="logging.conf")
 @click.pass_context
-def record(ctx, user, password, name, description, logconfig):
+def record(ctx, user, password, name, description, speedmap, logconfig):
     click.echo(f"recording session to url={ctx.obj['url']}")
     recorder.record(
         url=ctx.obj['url'],
         realm=ctx.obj['realm'],
         logconfig=logconfig,
         logLevel=ctx.obj['logLevel'],
-        extra={'user':user, 'password': password, 'name': name, 'description': description},
+        extra={'user':user, 'password': password, 'name': name, 'description': description, 'speedmap_interval': speedmap},
         )
 
 #@cli.command()

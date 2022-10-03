@@ -17,7 +17,7 @@
             "type": "python",
             "request": "launch",
             "module": "racelogger",
-            "args": ["record"],
+            "args": ["record", "--speedmap", "10"],
             "console": "integratedTerminal",
             "justMyCode": true
         }

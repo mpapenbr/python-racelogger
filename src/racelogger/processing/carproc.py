@@ -414,4 +414,7 @@ class CarProcessor():
         # self.logger.debug(ordered)
         return [[getattr(m, x) for x in self.manifest] for m in ordered]
 
+    def speedmap_output(self):
+        return self.speedmap.output_data()
+
 

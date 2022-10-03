@@ -100,6 +100,7 @@ class RecordingSession(ApplicationSession):
             state_publisher=lambda data: self.publish(state.publishStateTopic(), data),
             driver_publisher=lambda data: self.publish(state.publishDriverTopic(), data),
             speedmap_publisher=lambda data: self.publish(state.publishSpeedmapTopic(), data),
+            speedmap_publish_interval=self.config.extra['speedmap_interval']
 
             )
 

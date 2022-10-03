@@ -5,4 +5,5 @@ gitchangelog
 flake8
 isort
 tox
+autopep8
 
