@@ -1,5 +1,5 @@
 
-from racelogger.util.utils import collect_car_infos
+from racelogger.util.utils import collect_car_classes, collect_car_infos
 
 
 def test_car_infos_extractor():
@@ -92,3 +92,33 @@ def test_car_infos_extractor():
     ]
     result = collect_car_infos(ir)
     assert expect == result
+
+
+def test_car_classes_extractor_standard():
+    ir = [
+        {
+            'CarClassID': 1,
+            'CarClassShortName': 'GT3',
+        },
+        {
+            'CarClassID': 2,
+            'CarClassShortName': 'GT4',
+        },
+    ]
+    expect = [{'id': 1, 'name': 'GT3'}, {'id': 2, 'name': 'GT4'}]
+    result = collect_car_classes(ir)
+
+
+def test_car_classes_extractor_ai_simulation():
+    ir = [
+        {
+            'CarClassID': 1,
+            'CarClassShortName': '',
+        },
+        {
+            'CarClassID': 2,
+            'CarClassShortName': '',
+        },
+    ]
+    expect = [{'id': 1, 'name': 'CarClass 1'}, {'id': 2, 'name': 'CarClass 2'}]
+    result = collect_car_classes(ir)

@@ -1,4 +1,4 @@
-from racelogger.util.utils import collect_car_infos
+from racelogger.util.utils import collect_car_classes, collect_car_infos
 
 
 class DriverProcessor():
@@ -49,9 +49,11 @@ class DriverProcessor():
     def driverdata_output(self):
         """returns a data structure to be send on the driver topic."""
         def real_entry(d): return d['IsSpectator'] == 0 and d['CarIsPaceCar'] == 0
+
         # x = collect_car_infos(filter(real_entry, list(self.lookup.values())))
         return {
-            'carInfo': collect_car_infos(filter(real_entry, self.lookup.values())),
+            'cars': collect_car_infos(filter(real_entry, self.lookup.values())),
+            'carClasses': collect_car_classes(filter(real_entry, self.lookup.values())),
             'entries': [{
                 'car': {
                     'carIdx': car_idx,
