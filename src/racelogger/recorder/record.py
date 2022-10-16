@@ -40,7 +40,6 @@ class RecordingSession(ApplicationSession):
         self.log.info("Challenge for method {authmethod} received", authmethod=challenge.method)
         return self.config.extra['password']
 
-
     async def onJoin(self, details):
         state = await self._wait_for_iracing()
         self.log.info(f"state is {state}")
@@ -49,11 +48,11 @@ class RecordingSession(ApplicationSession):
         self.log.info("after recordingLoop")
         self.leave()
 
-    async def registerEvent(self, state:RecorderState, car_proc:CarProcessor):
+    async def registerEvent(self, state: RecorderState, car_proc: CarProcessor):
         self.track_info = collect_track_info(state.ir)
         self.event_info = collect_event_info(state.ir,
-            name=self.config.extra['name'] if 'name' in self.config.extra else None,
-            description=self.config.extra['description'] if 'description' in self.config.extra else None)
+                                             name=self.config.extra['name'] if 'name' in self.config.extra else None,
+                                             description=self.config.extra['description'] if 'description' in self.config.extra else None)
         print(f"{self.track_info=}\n{self.event_info}")
         racelog_event_key = hashlib.md5(state.ir['WeekendInfo'].__repr__().encode('utf-8')).hexdigest()
         state.eventKey = racelog_event_key
@@ -63,7 +62,7 @@ class RecordingSession(ApplicationSession):
                 'car': car_proc.manifest,
                 'session': SessionManifest,
                 'message': MessagesManifest,
-                'pit': [] # TODO: remove if removed in backend (not needed anymore)
+                'pit': []  # TODO: remove if removed in backend (not needed anymore)
             },
             'info': self.event_info,
             'trackInfo': self.track_info
@@ -71,7 +70,7 @@ class RecordingSession(ApplicationSession):
         # TODO: refactor with new backend endpoint
         await self.call("racelog.dataprovider.register_provider", register_data)
 
-    async def unregisterService(self, state:RecorderState, car_proc:CarProcessor):
+    async def unregisterService(self, state: RecorderState, car_proc: CarProcessor):
         """collect pit boundaries from CarProcessor, send update server and remove us as provider"""
         self.track_info['pit'] = {
             'entry': car_proc.pit_boundaries.pit_entry_boundary.middle,
@@ -85,7 +84,7 @@ class RecordingSession(ApplicationSession):
         """triggers termination of recording loop"""
         self.shouldRun = False
 
-    async def recordingLoop(self, state:RecorderState):
+    async def recordingLoop(self, state: RecorderState):
         self.shouldRun = True
 
         driver_proc = DriverProcessor(state.ir)
@@ -96,19 +95,19 @@ class RecordingSession(ApplicationSession):
         self.processor = Processor(
             state=state,
             subprocessors=subprocessors,
-            raceProcessor=RaceProcessor(recorderState=state,subprocessors=subprocessors),
+            raceProcessor=RaceProcessor(recorderState=state, subprocessors=subprocessors),
             state_publisher=lambda data: self.publish(state.publishStateTopic(), data),
-            driver_publisher=lambda data: self.publish(state.publishDriverTopic(), data),
+            cardata_publisher=lambda data: self.publish(state.publishCarDataTopic(), data),
             speedmap_publisher=lambda data: self.publish(state.publishSpeedmapTopic(), data),
             speedmap_publish_interval=self.config.extra['speedmap_interval']
 
-            )
+        )
 
         self.processor.raceProcessor.onRaceFinished = lambda: self.stopLoop()
         while self.shouldRun and self.processor.state.ir.is_connected:
             try:
                 duration = self.processor.step()
-                pause = max(0,1/60-duration)
+                pause = max(0, 1/60-duration)
                 await asyncio.sleep(pause)
 
             except Exception as e:
@@ -141,7 +140,7 @@ class RecordingSession(ApplicationSession):
         return state
 
 
-def record(url:str=None, realm:str=None, logLevel:str='error', logconfig="logging.conf", extra=None):
+def record(url: str = None, realm: str = None, logLevel: str = 'error', logconfig="logging.conf", extra=None):
     # logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     # logging.getLogger('SpeedMapCompute').setLevel(logging.ERROR)
     # logging.getLogger('SpeedMap').setLevel(logging.ERROR)
@@ -155,4 +154,3 @@ def record(url:str=None, realm:str=None, logLevel:str='error', logconfig="loggin
         ssl_context = None
     runner = ApplicationRunner(url=url, realm=realm, extra=extra, ssl=ssl_context)
     runner.run(RecordingSession)
-

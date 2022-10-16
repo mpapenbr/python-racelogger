@@ -7,12 +7,14 @@ class DataType(Enum):
     NUMERIC = 2
     TIME = 3
 
+
+# Note: Keep this in sync with iracelog_service_manager/model/message.py and iracelog/sotres/wamp/types.ts
 class MessageType(Enum):
     EMPTY = 0
     STATE = 1
-    DRIVER = 2
+    STATE_DELTA = 2
     SPEEDMAP = 3
-
+    CAR = 4
 
 
 class Message:
@@ -24,8 +26,6 @@ class Message:
         self.type = type
         self.timestamp = time.time()
         self.payload = payload
-
-
 
 
 class StateMessage:
