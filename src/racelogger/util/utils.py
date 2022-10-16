@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
-from typing import List, Tuple
+from typing import List
+from typing import Tuple
 
 from irsdk import IRSDK
 
@@ -118,7 +119,7 @@ def collect_car_classes(drivers):
     collects the car class informations from irdsk DriverInfo.Drivers (which is passed in as drivers argument)    
     """
     def coalesce_car_class_name(d) -> str:
-        if len(d['CarClassShortName']) > 0:
+        if d['CarClassShortName'] != None and len(d['CarClassShortName']) > 0:
             return d['CarClassShortName']
         else:
             return f"CarClass {d['CarClassID']}"
