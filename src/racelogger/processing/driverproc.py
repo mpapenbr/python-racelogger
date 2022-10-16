@@ -1,4 +1,5 @@
-from racelogger.util.utils import collect_car_classes, collect_car_infos
+from racelogger.util.utils import collect_car_classes
+from racelogger.util.utils import collect_car_infos
 
 
 class DriverProcessor():

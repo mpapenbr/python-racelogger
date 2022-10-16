@@ -1,5 +1,6 @@
 
-from racelogger.util.utils import collect_car_classes, collect_car_infos
+from racelogger.util.utils import collect_car_classes
+from racelogger.util.utils import collect_car_infos
 
 
 def test_car_infos_extractor():

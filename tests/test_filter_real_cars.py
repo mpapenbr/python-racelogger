@@ -1,5 +1,6 @@
 
 from unittest import expectedFailure
+
 from racelogger.util.utils import collect_session_info
 
 
