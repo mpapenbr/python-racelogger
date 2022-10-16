@@ -26,7 +26,7 @@ class Processor:
     """container with subprocessors"""
     state_publisher: Callable[[any], None]
     """is called when state data should be send to server"""
-    driver_publisher: Callable[[any], None]
+    cardata_publisher: Callable[[any], None]
     """is called when driver data should be send to server"""
     speedmap_publisher: Callable[[any], None]
     """is called when speedmap data should be send to server"""
@@ -65,7 +65,7 @@ class Processor:
                 if self.state.ir['DriverInfo'] != self.lastDI:
                     self.lastDI = self.state.ir['DriverInfo']
                     self.subprocessors.driver_proc.process(self.state.ir, self.subprocessors.msg_proc)
-                    self.publishDriverData()
+                    self.publishCarData()
             # do the processing here
             self.raceProcessor.process(self.state.ir)
 
@@ -100,10 +100,10 @@ class Processor:
         self.state_publisher(msg.__dict__)
         self.subprocessors.msg_proc.clear_buffer()
 
-    def publishDriverData(self):
-        self.log.debug(f"about to publish driver data")
-        msg = Message(type=MessageType.DRIVER.value, payload=self.subprocessors.driver_proc.driverdata_output())
-        self.driver_publisher(msg.__dict__)
+    def publishCarData(self):
+        self.log.debug(f"about to publish car data")
+        msg = Message(type=MessageType.CAR.value, payload=self.subprocessors.driver_proc.driverdata_output())
+        self.cardata_publisher(msg.__dict__)
 
     def publishSpeedmapData(self):
         self.log.debug(f"about to publish speedmap data")

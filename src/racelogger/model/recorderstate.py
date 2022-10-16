@@ -7,7 +7,7 @@ from irsdk import IRSDK
 @dataclass
 class RecorderState:
     """holds the current state of the recorder"""
-    ir_connected:bool
+    ir_connected: bool
     """True if connected to iRacing sim"""
     ir: IRSDK
     """API to iRacing"""
@@ -16,16 +16,13 @@ class RecorderState:
 
     def publishStateTopic(self) -> str:
         """return the publish topic for the recording event"""
-        
+
         return f"racelog.public.live.state.{self.eventKey}"
 
-    def publishDriverTopic(self) -> str:
-        """return the publish topic for the driver data"""        
-        return f"racelog.public.live.driver.{self.eventKey}"
-    
+    def publishCarDataTopic(self) -> str:
+        """return the publish topic for the car/driver/team data"""
+        return f"racelog.public.live.cardata.{self.eventKey}"
+
     def publishSpeedmapTopic(self) -> str:
-        """return the publish topic for the speedmap data"""        
+        """return the publish topic for the speedmap data"""
         return f"racelog.public.live.speedmap.{self.eventKey}"
-
-
-
