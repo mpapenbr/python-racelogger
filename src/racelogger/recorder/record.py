@@ -72,9 +72,18 @@ class RecordingSession(ApplicationSession):
 
     async def unregisterService(self, state: RecorderState, car_proc: CarProcessor):
         """collect pit boundaries from CarProcessor, send update server and remove us as provider"""
+        def pit_lane_length(entry: float, exit: float) -> float:
+            if exit > entry:
+                return (exit-entry) * self.track_info['trackLength']
+            else:
+                return (1-entry + exit) * self.track_info['trackLength']
+
         self.track_info['pit'] = {
             'entry': car_proc.pit_boundaries.pit_entry_boundary.middle,
-            'exit': car_proc.pit_boundaries.pit_exit_boundary.middle
+            'exit': car_proc.pit_boundaries.pit_exit_boundary.middle,
+            'laneLength': pit_lane_length(
+                car_proc.pit_boundaries.pit_entry_boundary.middle,
+                car_proc.pit_boundaries.pit_exit_boundary.middle)
         }
 
         await self.call("racelog.dataprovider.store_event_extra_data", state.eventKey, {'track': self.track_info})
