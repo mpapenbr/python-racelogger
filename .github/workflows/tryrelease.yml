@@ -28,7 +28,7 @@ jobs:
         # source: https://python.plainenglish.io/pyinstaller-exe-false-positive-trojan-virus-resolved-b33842bd3184
         run: |
           pip install wheel
-          export PYI_VERSION=5.4.1
+          export PYI_VERSION=5.6.2
           CURDIR=$PWD && \
           mkdir -p tmp && cd tmp && \
           curl --location --remote-name https://github.com/pyinstaller/pyinstaller/archive/refs/tags/v$PYI_VERSION.tar.gz && \
