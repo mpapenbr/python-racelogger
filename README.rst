@@ -16,9 +16,9 @@ Overview
     :alt: Documentation Status
 
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/mpapenbr/python-racelogger/v0.5.1.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/mpapenbr/python-racelogger/v0.5.2.svg
     :alt: Commits since latest release
-    :target: https://github.com/mpapenbr/python-racelogger/compare/v0.5.1...master
+    :target: https://github.com/mpapenbr/python-racelogger/compare/v0.5.2...master
 
 
 

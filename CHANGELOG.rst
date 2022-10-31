@@ -2,6 +2,20 @@ Changelog
 =========
 
 
+v0.5.2 (2022-10-31)
+-------------------
+
+New
+~~~
+- Provide pit lane length and pit speed (#46) [mpapenbr]
+
+Other
+~~~~~
+- Chore: updated pyinstaller. [mpapenbr]
+- Chore: updated pyinstaller version. [mpapenbr]
+- Chore: updated versions for actions. [mpapenbr]
+
+
 v0.5.1 (2022-10-16)
 -------------------
 
