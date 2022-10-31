@@ -38,6 +38,8 @@ def collect_event_info(ir: IRSDK, name: str = None, description: str = None):
     info['trackDisplayShortName'] = wi['TrackDisplayShortName']
     info['trackConfigName'] = wi['TrackConfigName']
     info['trackLength'] = get_track_length_in_meters(wi['TrackLength'])
+    info['trackPitSpeed'] = get_value_from_unit_attribute(wi['TrackPitSpeedLimit'])[0]
+
     info['eventTime'] = datetime.strptime(
         f"{wi['WeekendOptions']['Date']} {wi['WeekendOptions']['TimeOfDay']}", "%Y-%m-%d %I:%M %p").isoformat()
     info['sectors'] = ir['SplitTimeInfo']['Sectors']
@@ -82,6 +84,7 @@ def collect_track_info(ir: IRSDK):
     info['trackDisplayShortName'] = wi['TrackDisplayShortName']
     info['trackConfigName'] = wi['TrackConfigName']
     info['trackLength'] = get_track_length_in_meters(wi['TrackLength'])
+    info['trackPitSpeed'] = get_value_from_unit_attribute(wi['TrackPitSpeedLimit'])[0]
     info['sectors'] = ir['SplitTimeInfo']['Sectors']
     # note: pitBoundaries are collected during the race
     return info
