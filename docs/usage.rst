@@ -51,6 +51,8 @@ In order to record a race use the *record* command::
       --password TEXT     user password  to access crossbar realm  [required]
       --name TEXT         name of the recording event.
       --description TEXT  event description
+      --speedmap INTEGER  interval (in seconds) for sending the speedmap
+                          [default: 60]
       --logconfig TEXT    name of the logging configuration file
       --help              Show this message and exit.
 
@@ -111,4 +113,5 @@ racelogger.ini
     [record]
     user=dataprovider
     password=EnterPasswordHere
+    speedmap=60
 
