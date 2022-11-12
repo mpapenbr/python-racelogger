@@ -23,10 +23,11 @@ def get_value_from_unit_attribute(arg: str) -> Tuple[float, str]:
     return (float(m.group('value')), m.group('unit'))
 
 
-def collect_event_info(ir: IRSDK, name: str = None, description: str = None):
+def collect_event_info(ir: IRSDK, name: str = None, description: str = None, speedmap_interval: int = 0):
     """creates a dict with selected event information from iRacing telemetry"""
     info = {}
     info['raceloggerVersion'] = racelogger_version
+    info['speedmapInterval'] = speedmap_interval
     wi = ir['WeekendInfo']
     info['trackId'] = wi['TrackID']
     info['teamRacing'] = wi['TeamRacing']

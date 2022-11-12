@@ -52,7 +52,8 @@ class RecordingSession(ApplicationSession):
         self.track_info = collect_track_info(state.ir)
         self.event_info = collect_event_info(state.ir,
                                              name=self.config.extra['name'] if 'name' in self.config.extra else None,
-                                             description=self.config.extra['description'] if 'description' in self.config.extra else None)
+                                             description=self.config.extra['description'] if 'description' in self.config.extra else None,
+                                             speedmap_interval=self.config.extra['speedmap_interval'])
         print(f"{self.track_info=}\n{self.event_info}")
         racelog_event_key = hashlib.md5(state.ir['WeekendInfo'].__repr__().encode('utf-8')).hexdigest()
         state.eventKey = racelog_event_key

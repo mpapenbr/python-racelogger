@@ -34,10 +34,11 @@ from racelogger.testcon.ping import ping as testPing
 @click.option('--realm', help='crossbar realm for racelogger ')
 @click.option('--verbose', "-v", help='set verbosity level', count=True)
 @click.version_option(__version__)
-def main(name,url,config,verbose,realm):
+def main(name, url, config, verbose, realm):
     """Record race data as event NAME """
 
     verboseLevel = ['info', 'debug', 'trace']
+
 
 cp = configparser.ConfigParser()
 cp.read("racelogger.ini")
@@ -46,7 +47,7 @@ configData = {}
 for k in defaultSection.keys():
     configData[k] = defaultSection[k]
 for section in cp.sections():
-    configData[section] = {k:cp[section][k] for k in cp[section].keys()}
+    configData[section] = {k: cp[section][k] for k in cp[section].keys()}
 
 
 CONTEXT_SETTINGS = dict(
@@ -63,10 +64,10 @@ CONTEXT_SETTINGS = dict(
 @click.pass_context
 @click.option('--config', help='configuration file', envvar="RACELOG_CONFIG", default="racelogger.ini", show_default=True)
 @click.option('--url', help='url of the crossbar server', envvar="RACELOG_URL", show_default=True)
-@click.option('--realm', help='crossbar realm for racelogger ',show_default=True)
+@click.option('--realm', help='crossbar realm for racelogger ', show_default=True)
 @click.option('--verbose', "-v", help='set verbosity level', count=True)
 @click.version_option(__version__)
-def cli(ctx,config,url,realm,verbose):
+def cli(ctx, config, url, realm, verbose):
     """Command line interface for racelogger"""
     ctx.ensure_object(dict)
     cp = configparser.ConfigParser()
@@ -78,7 +79,7 @@ def cli(ctx,config,url,realm,verbose):
     ctx.obj['url'] = url
     ctx.obj['realm'] = realm
     levels = ['info', 'debug', 'trace']
-    ctx.obj['logLevel'] = levels[min(verbose,len(levels)-1)]
+    ctx.obj['logLevel'] = levels[min(verbose, len(levels)-1)]
 
 
 # @cli.command()
@@ -92,21 +93,25 @@ def test(ctx, user, password, maxtime):
         url=ctx.obj['url'],
         realm=ctx.obj['realm'],
         logLevel=ctx.obj['logLevel'],
-        extra={'user':user, 'password': password, 'maxtime': maxtime},
-        )
+        extra={'user': user, 'password': password, 'maxtime': maxtime},
+    )
 
-@cli.command()
+
+# @cli.command(context_settings=CONTEXT_SETTINGS)
+@cli.command
+@click.option('--speedmap', help='interval (in seconds) for sending the speedmap', type=int, show_default=True, default=60)
 @click.pass_context
-def ping(ctx):
+def ping(ctx, speedmap):
     click.echo(f"pinging url={ctx.obj['url']} with logLevel {ctx.obj['logLevel']}")
     testPing()
+
 
 @cli.command()
 @click.option('--user', help='user name to access crossbar realm', required=True)
 @click.option('--password', help='user password  to access crossbar realm', required=True)
 @click.option('--name', help="name of the recording event.")
 @click.option('--description', help='event description')
-@click.option('--speedmap', help='interval (in seconds) for sending the speedmap', type=int, default=60)
+@click.option('--speedmap', help='interval (in seconds) for sending the speedmap', type=int, show_default=True, default=60)
 @click.option('--logconfig', help='name of the logging configuration file', default="logging.conf")
 @click.pass_context
 def record(ctx, user, password, name, description, speedmap, logconfig):
@@ -116,16 +121,15 @@ def record(ctx, user, password, name, description, speedmap, logconfig):
         realm=ctx.obj['realm'],
         logconfig=logconfig,
         logLevel=ctx.obj['logLevel'],
-        extra={'user':user, 'password': password, 'name': name, 'description': description, 'speedmap_interval': speedmap},
-        )
+        extra={'user': user, 'password': password, 'name': name, 'description': description, 'speedmap_interval': speedmap},
+    )
 
-#@cli.command()
+# @cli.command()
+
+
 @click.pass_context
 def config(ctx):
     cp = configparser.ConfigParser()
     cp.read('config.ini')
     print(f"Default: {[k for k in cp['DEFAULT'].keys()]}")
     print(cp.sections())
-
-
-

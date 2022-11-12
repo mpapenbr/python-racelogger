@@ -6,3 +6,4 @@ realm=racelog
 [record]
 user=dataprovider
 password=EnterPasswordHere
+speedmap=60 
