@@ -107,5 +107,5 @@ class Processor:
 
     def publishSpeedmapData(self):
         self.log.debug(f"about to publish speedmap data")
-        msg = Message(type=MessageType.SPEEDMAP.value, payload=self.subprocessors.car_proc.speedmap_output())
+        msg = Message(type=MessageType.SPEEDMAP.value, payload=self.subprocessors.car_proc.speedmap_output(self.state.ir))
         self.speedmap_publisher(msg.__dict__)
