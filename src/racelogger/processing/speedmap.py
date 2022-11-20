@@ -1,4 +1,5 @@
 import argparse
+from functools import reduce
 import logging
 import logging.config
 import math
@@ -14,6 +15,7 @@ class ChunkData:
 
     @param min_hist build up at least this many entries before deciding about which entries to keep.
     """
+
     def __init__(self, id, keep_hist=11, min_hist=3) -> None:
         self.id = id
         self.min = 0
@@ -47,8 +49,6 @@ class ChunkData:
             return
         # now we have to decide what to do with the new value
 
-
-
     def recompute_values(self):
         """
         docstring
@@ -58,7 +58,7 @@ class ChunkData:
         self.avg = sum(self.hist)/len(self.hist)
 
     def __repr__(self) -> str:
-        tmp = ", ".join([f"{e:.0f}" for e in self.hist] )
+        tmp = ", ".join([f"{e:.0f}" for e in self.hist])
         return f'ChunkData {self.id}: min: {self.min:3.0f} max: {self.max:3.0f} avg: {self.avg:3.0f} hist: {tmp}'
 
 
@@ -67,6 +67,7 @@ class SpeedMap:
     tracks the speed of car classes and single cars on different chunks of the track.
     This data is used for computing the intervals (in s) between cars
     """
+
     def __init__(self, track_length, chunk_size=10):
         """
         @param track_length: the track length (meters)
@@ -76,7 +77,7 @@ class SpeedMap:
         @param car_classes: the number of car_classes to monitor
         """
         self.track_length = track_length
-        self.chunk_size=chunk_size
+        self.chunk_size = chunk_size
         self.num_chunks = math.ceil(self.track_length / self.chunk_size)
         self.track_pos = 0
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -88,7 +89,7 @@ class SpeedMap:
         return f'SpeedMap trackLength: {self.track_length} chunkSize: {self.chunk_size}'
 
     def __create_chunk(self):
-        init_chunk_data = lambda : [ChunkData(y) for y in range(self.num_chunks)]
+        def init_chunk_data(): return [ChunkData(y) for y in range(self.num_chunks)]
         return init_chunk_data()
 
     def __create_chunks(self):
@@ -96,9 +97,7 @@ class SpeedMap:
         self.car_classes_dict = {}
         self.car_idx_chunks = [self.__create_chunk() for i in range(64)]
 
-
-
-    def __delta_distance(a,b):
+    def __delta_distance(a, b):
         if a > b:
             return a-b
         else:
@@ -116,7 +115,7 @@ class SpeedMap:
             return idx
 
     def process(self, track_pos, speed, car_class_id):
-        self.track_pos = track_pos 
+        self.track_pos = track_pos
         chunk_idx = self.__get_chunk_idx(track_pos)
         car_class_chunks = self.car_classes_dict.get(car_class_id)
         if car_class_chunks == None:
@@ -168,31 +167,33 @@ class SpeedMap:
 
         return total_delta
 
-
-    def output_data(self) -> dict:
+    def output_data(self, session_time: float, track_temp: float, time_of_day: float) -> dict:
+        def compute_laptime(chunks) -> float:
+            """computes the laptime of a lap by computing the time needed for each chunk (speed is given in km/h)"""
+            ret: float = reduce(lambda prev, cur: prev + self.chunk_size / (cur / 3.6), chunks, 0)
+            return ret
 
         ret = {
+            'sessionTime': session_time,
+            'timeOfDay': time_of_day,
+            'trackTemp': track_temp,
             'trackLength': self.track_length,
             'chunkSize': self.chunk_size,
             'currentPos': self.track_pos,
-            'data': {k:[lv.avg for lv in v] for k,v in self.car_classes_dict.items()},
-            }
+            'data': {k: {'chunkSpeeds': [lv.avg for lv in v],
+                         'laptime': compute_laptime([lv.avg for lv in v])} for k, v in self.car_classes_dict.items()},
+        }
         return ret
-
-
-
 
     def log_car_classes(self):
         """
         docstring
         """
         if (self.datalogger.isEnabledFor(logging.DEBUG)):
-            for k,v in self.car_classes_dict.items():
-                #for item in sorted(self.car_classes_dict.values(), key=lambda x: id):
+            for k, v in self.car_classes_dict.items():
+                # for item in sorted(self.car_classes_dict.values(), key=lambda x: id):
                 for chunk in v:
                     self.datalogger.debug(f'ClassId: {k}: {chunk}')
-
-
 
 
 # info: https://realpython.com/python-logging/

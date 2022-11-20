@@ -13,30 +13,33 @@ from racelogger.util.utils import gate
 from racelogger.util.utils import get_track_length_in_meters
 
 
-def delta_distance(a,b):
+def delta_distance(a, b):
     if a >= b:
         return a-b
     else:
         return a+1-b
 
-def delta_to_prev(a,b):
+
+def delta_to_prev(a, b):
     d = abs(a-b)
     if d > 0.5:
         return 1-d
     else:
         return d
 
+
 def laptimeStr(t):
-    work = t;
-    minutes = t // 60;
-    work -= minutes * 60;
-    seconds = math.trunc(work);
-    work -= seconds;
-    hundrets = math.trunc(work * 100);
-    if minutes > 0 :
+    work = t
+    minutes = t // 60
+    work -= minutes * 60
+    seconds = math.trunc(work)
+    work -= seconds
+    hundrets = math.trunc(work * 100)
+    if minutes > 0:
         return f"{minutes:.0f}:{seconds:02d}.{hundrets:02d}"
     else:
         return f"{seconds:02d}.{hundrets:02d}"
+
 
 def coalesce(arg):
     if type(arg) == int:
@@ -46,53 +49,50 @@ def coalesce(arg):
     return 0
 
 
-
-
-
-
 class CarProcessor():
     """
     the main processor for handling data around the complete car field.
     This means standings and the like are processed here as well as relative gaps and distances.
     Data for single cars is processed in CarData.
     """
-    def __init__(self,driver_proc=None, current_ir=None, manifest=CarsManifest) -> None:
+
+    def __init__(self, driver_proc=None, current_ir=None, manifest=CarsManifest) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.driver_proc = driver_proc
         self.lookup = {}
         self.prev_dist_pct = []
         self.prev_time = current_ir['SessionTime']
-        self.sectors = current_ir['SplitTimeInfo']['Sectors'];
+        self.sectors = current_ir['SplitTimeInfo']['Sectors']
         self.manifest = manifest + [f's{x+1}' for x in range(len(self.sectors))]
 
         if current_ir['WeekendInfo']['TeamRacing'] == 0:
             self.manifest.remove('teamName')
         if current_ir['WeekendInfo']['NumCarClasses'] == 1:
             self.manifest.remove('carClass')
-        
 
         self.overall_best_sectors = [sys.maxsize for x in range(len(self.sectors))]
         self.overall_best_lap = sys.maxsize
-        self.class_best_laps = [] # todo!
+        self.class_best_laps = []  # todo!
 
-        self.about_to_finish_marker = [] # will be set when checkered flag is issues
-        self.winner_crossed_the_line = False # you guess when it will be true
+        self.about_to_finish_marker = []  # will be set when checkered flag is issues
+        self.winner_crossed_the_line = False  # you guess when it will be true
 
         self.track_length = get_track_length_in_meters(current_ir['WeekendInfo']['TrackLength'])
         print(f"TrackLength: {self.track_length}")
-        self.min_move_dist_pct = 0.1/self.track_length # if a car doesn't move 10cm in 1/60s
+        self.min_move_dist_pct = 0.1/self.track_length  # if a car doesn't move 10cm in 1/60s
         self.last_standings = current_ir['SessionInfo']['Sessions'][current_ir['SessionNum']]['ResultsPositions']
         self.speedmap = SpeedMap(self.track_length)
         self.pit_boundaries = PitBoundaries()
 
     def collect_caridx_to_process(self, ir):
-        ret = [item['CarIdx'] for item in filter(lambda d: d['IsSpectator']==0 and d['CarIsPaceCar']==0,ir['DriverInfo']['Drivers'])]
+        ret = [item['CarIdx'] for item in filter(lambda d: d['IsSpectator'] == 0 and d['CarIsPaceCar'] == 0, ir['DriverInfo']['Drivers'])]
         return ret
 
-    def process(self,ir,msg_proc):
+    def process(self, ir, msg_proc):
         for idx in self.collect_caridx_to_process(ir):
             if idx not in self.lookup.keys():
-                work = CarData(carIdx=idx,manifest=self.manifest, num_sectors=len(self.sectors), driver_proc=self.driver_proc,pit_boundaries=self.pit_boundaries)
+                work = CarData(carIdx=idx, manifest=self.manifest, num_sectors=len(self.sectors),
+                               driver_proc=self.driver_proc, pit_boundaries=self.pit_boundaries)
                 work.last = -1
                 work.best = -1
                 self.lookup[idx] = work
@@ -102,7 +102,7 @@ class CarProcessor():
             work.process(ir)
 
             if work.processState in [CarState.RUN, CarState.SLOW, CarState.PIT]:
-                work = self.compute_times(work,ir, msg_proc)
+                work = self.compute_times(work, ir, msg_proc)
 
                 speed = self.calc_speed(ir, idx)
                 work.speed = speed
@@ -112,11 +112,10 @@ class CarProcessor():
         self.calc_delta(ir)
         cur_standings = ir['SessionInfo']['Sessions'][ir['SessionNum']]['ResultsPositions']
         if cur_standings != self.last_standings:
-            self.process_standings(cur_standings,msg_proc)
+            self.process_standings(cur_standings, msg_proc)
 
-        self.prev_dist_pct = ir['CarIdxLapDistPct'][:] # create a copy for next run
+        self.prev_dist_pct = ir['CarIdxLapDistPct'][:]  # create a copy for next run
         self.prev_time = ir['SessionTime']
-
 
     def process_standings(self, st, msg_proc):
         # Note: we get the standings a little bit after a car crossed the line (about a second)
@@ -165,7 +164,6 @@ class CarProcessor():
                             check_other.marker_info = (line['LapsComplete'], "pb")
                             check_other.last[1] = "pb"
 
-
                     self.overall_best_lap = duration
                 elif duration < work.current_best:
                     work.last = [duration, "pb"]
@@ -177,7 +175,7 @@ class CarProcessor():
                         work.last = [duration, work.marker_info[1]]
                     else:
                         work.last = duration
-                        work.marker_info = (-1,"")
+                        work.marker_info = (-1, "")
 
         if ob_idx != None:
             work = self.lookup.get(ob_idx)
@@ -185,11 +183,10 @@ class CarProcessor():
             if type(duration) is list:
                 # msg_proc.add_timing_info(ob_idx, f'strange: {duration}')
                 duration = duration[0]
-            work.last = [duration , "ob"]
+            work.last = [duration, "ob"]
             msg_proc.add_timing_info(ob_idx, f'new overall best lap {laptimeStr(duration)}')
 
         self.last_standings = st
-
 
     def compute_times(self, carData, ir, msg_proc):
         trackPos = getattr(carData, 'trackPos')
@@ -233,7 +230,7 @@ class CarProcessor():
         duration = sector.mark_stop(t)
         # handle the colors for best sector
         if duration < self.overall_best_sectors[carData.current_sector]:
-            setattr(carData, f's{carData.current_sector+1}', [duration, "ob"]) # +1 because auf s1,s2,s3...
+            setattr(carData, f's{carData.current_sector+1}', [duration, "ob"])  # +1 because auf s1,s2,s3...
             self.overall_best_sectors[carData.current_sector] = duration
             # TODO: if another car has also an "ob" sector, downgrade it to "pb" or "cb" ;)
             manifest_sector = f's{carData.current_sector+1}'
@@ -264,7 +261,7 @@ class CarProcessor():
         if (i == 0):
             self.logger.info(f"car {car_num} crossed the line")
 
-            ## TODO: StintLaps berechnen
+            # TODO: StintLaps berechnen
             # mal schauen, ob das so geht. Evtl. noch Sonderbehandlung für Racefinish
             #carData.stintLap += 1
 
@@ -277,7 +274,7 @@ class CarProcessor():
                 carData.processState = CarState.FINISHED
                 # we don't want the cool down lap to be counted
                 carData.lap = getattr(carData, "lc")
-                carData.stintLap -= 1 # remove +1 from above
+                carData.stintLap -= 1  # remove +1 from above
                 self.logger.info(f"car {car_num} finished the race")
                 return carData
             else:
@@ -292,7 +289,7 @@ class CarProcessor():
                         carData.processState = CarState.FINISHED
                         # we don't want the cool down lap to be counted
                         carData.lap = lc
-                        carData.stintLap -= 1 # remove +1 from above
+                        carData.stintLap -= 1  # remove +1 from above
                         # setattr(carData, "state", "FIN")
                         self.logger.info(f"car {car_num} won the race")
                         return carData
@@ -315,24 +312,22 @@ class CarProcessor():
         self.about_to_finish_marker = current_order
         self.logger.info(f"about to finish marker: {self.about_to_finish_marker}")
 
-
     def get_current_raceorder(self):
         def standard_race_order():
             """
             this is used during the race
             """
-            ret = [(i.carIdx, coalesce(i.lap)+coalesce(i.trackPos))  for i in self.lookup.values()]
-            ret.sort(key = lambda k: k[1], reverse=True)
+            ret = [(i.carIdx, coalesce(i.lap)+coalesce(i.trackPos)) for i in self.lookup.values()]
+            ret.sort(key=lambda k: k[1], reverse=True)
             return ret
-
 
         def race_ending_race_order():
             """
             this is used, when the first car has finished the race. We want some special treatment here.
             """
-            ret = [(i.carIdx, i.pos)  for i in self.lookup.values() if coalesce(i.pos) > 0]
-            ret.sort(key = lambda k: k[1], reverse=False)
-            ret.extend((i.carIdx, i.pos)  for i in self.lookup.values() if i.pos < 1)
+            ret = [(i.carIdx, i.pos) for i in self.lookup.values() if coalesce(i.pos) > 0]
+            ret.sort(key=lambda k: k[1], reverse=False)
+            ret.extend((i.carIdx, i.pos) for i in self.lookup.values() if i.pos < 1)
             return ret
 
         if (self.winner_crossed_the_line):
@@ -359,7 +354,8 @@ class CarProcessor():
             speed = move_dist_pct*self.track_length/delta_time * 3.6
 
             if (speed > 400):
-                self.logger.warning(f'STime: {ir["SessionTime"]:.0f} Speed > 400: {speed} carIdx: {idx} curPctRaw: {current_dist} prevPctRaw: {self.prev_dist_pct[idx]} dist: {move_dist_pct} dist(m): {move_dist_pct*self.track_length} deltaTime: {delta_time}')
+                self.logger.warning(
+                    f'STime: {ir["SessionTime"]:.0f} Speed > 400: {speed} carIdx: {idx} curPctRaw: {current_dist} prevPctRaw: {self.prev_dist_pct[idx]} dist: {move_dist_pct} dist(m): {move_dist_pct*self.track_length} deltaTime: {delta_time}')
                 return -1
             else:
                 if ir['CarIdxOnPitRoad'][idx] == False and speed > 0:
@@ -387,14 +383,14 @@ class CarProcessor():
                 car_in_front = current_race_order[i-1][0]
                 gap_of_car_in_front = getattr(self.lookup[car_in_front], 'gap')
                 work.interval = getattr(work, 'gap') - gap_of_car_in_front
-                continue # do not calc any other data for finished cars
+                continue  # do not calc any other data for finished cars
 
             car_in_front_pos = current_pct[current_race_order[i-1][0]]
             current_car_pos = current_pct[item[0]]
 
             # data.car_idx_dist_meters[item[0]] =  delta_distance(gate(current_pct[current_race_order[i-1][0]]), gate(current_pct[item[0]])) * self.track_length
-            work.dist =  delta_distance(gate(current_pct[current_race_order[i-1][0]]), gate(current_pct[item[0]])) * self.track_length
-            if coalesce(getattr(work,'speed')) <= 0:
+            work.dist = delta_distance(gate(current_pct[current_race_order[i-1][0]]), gate(current_pct[item[0]])) * self.track_length
+            if coalesce(getattr(work, 'speed')) <= 0:
                 work.interval = 999
             else:
                 # x1 = filter(lambda x: x['CarIdx']==i, state.lastDI['Drivers'])
@@ -414,7 +410,5 @@ class CarProcessor():
         # self.logger.debug(ordered)
         return [[getattr(m, x) for x in self.manifest] for m in ordered]
 
-    def speedmap_output(self):
-        return self.speedmap.output_data()
-
-
+    def speedmap_output(self, ir):
+        return self.speedmap.output_data(session_time=ir['SessionTime'], track_temp=ir['TrackTemp'], time_of_day=ir['SessionTimeOfDay'])
