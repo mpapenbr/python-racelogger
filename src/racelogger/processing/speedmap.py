@@ -1,9 +1,9 @@
 import argparse
-from functools import reduce
 import logging
 import logging.config
 import math
 import time
+from functools import reduce
 
 import irsdk
 import yaml
