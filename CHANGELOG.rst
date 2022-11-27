@@ -2,6 +2,28 @@ Changelog
 =========
 
 
+v0.6.0 (2022-11-27)
+-------------------
+
+New
+~~~
+- Speedmap interval in config, include speedmap interval in event info
+  (#52, #58) [mpapenbr]
+
+Changes
+~~~~~~~
+- Include additional attributes in speedmap data. [mpapenbr]
+
+  Fixes #64
+
+Other
+~~~~~
+- Chore: bump tox,virtualenv,urllib3,exceptiongroup. [mpapenbr]
+- Chore: sorting imports in speedmap. [mpapenbr]
+- Chore: bump python to 3.10 for readthedocs. [mpapenbr]
+- Chore: update dependencies. [mpapenbr]
+
+
 v0.5.2 (2022-10-31)
 -------------------
 
