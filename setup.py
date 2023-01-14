@@ -65,7 +65,7 @@ setup(
     python_requires='>=3.10',
     install_requires=[
         'click>=8',
-        'autobahn==22.7.1',
+        'autobahn==22.12.1',
         'certifi',
         "pyirsdk"
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
