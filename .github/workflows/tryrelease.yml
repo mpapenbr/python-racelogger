@@ -10,6 +10,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Prep
+        id: prep
+        shell: bash
+        run: |
+
+          VERSION=edge
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          elif [[ $GITHUB_REF == refs/heads/* ]]; then
+            VERSION=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's#/+#-#g')
+          elif [[ $GITHUB_REF == refs/pull/* ]]; then
+            VERSION=pr-${{ github.event.number }}
+          fi
+                    
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT          
+          echo "created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -28,7 +45,7 @@ jobs:
         # source: https://python.plainenglish.io/pyinstaller-exe-false-positive-trojan-virus-resolved-b33842bd3184
         run: |
           pip install wheel
-          export PYI_VERSION=5.6.2
+          export PYI_VERSION=5.7.0
           CURDIR=$PWD && \
           mkdir -p tmp && cd tmp && \
           curl --location --remote-name https://github.com/pyinstaller/pyinstaller/archive/refs/tags/v$PYI_VERSION.tar.gz && \
@@ -36,7 +53,7 @@ jobs:
           cd pyinstaller-$PYI_VERSION/bootloader && \
           python ./waf all --target-arch=64bit && \
           cd $CURDIR
-          cd tmp/pyinstaller-$PYI_VERSION && python setup.py install
+          cd tmp/pyinstaller-$PYI_VERSION && pip install .
 
       - name: do local install
         run: |
@@ -64,25 +81,11 @@ jobs:
           cp ./logging.conf assets2/logging.conf
 
       - name: Create single exe zip
-        uses: papeloto/action-zip@v1
-        with:
-          files: assets/
-          dest: racelogger-exe.zip
-          recursive: true # note: may be a bug. see https://github.com/vimtor/action-zip/issues/8
+        shell: bash
+        run: |
+          cd assets && 7z a racelogger.zip *
 
-      - uses: actions/upload-artifact@v1
-        with:
-          name: single-exe-artifact
-          path: ${{ github.workspace }}/racelogger-exe.zip
-
-      - name: Create dir zip
-        uses: papeloto/action-zip@v1
-        with:
-          files: assets2/
-          dest: racelogger.zip
-          recursive: false # note: may be a bug. see https://github.com/vimtor/action-zip/issues/8
-
-      - uses: actions/upload-artifact@v1
-        with:
-          name: standard-artifact
-          path: ${{ github.workspace }}/racelogger.zip
+      - name: Use gh release
+        run: gh release create test -t test-release -p ${{ github.workspace }}/assets/racelogger.zip
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
