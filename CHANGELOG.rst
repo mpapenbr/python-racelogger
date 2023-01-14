@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+v0.6.1 (2023-01-14)
+-------------------
+
+Fix
+~~~
+- Laptime computation in speedmap message  (#78) [mpapenbr]
+
+
 v0.6.0 (2022-11-27)
 -------------------
 
