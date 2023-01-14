@@ -170,8 +170,13 @@ class SpeedMap:
     def output_data(self, session_time: float, track_temp: float, time_of_day: float) -> dict:
         def compute_laptime(chunks) -> float:
             """computes the laptime of a lap by computing the time needed for each chunk (speed is given in km/h)"""
-            ret: float = reduce(lambda prev, cur: prev + self.chunk_size / (cur / 3.6), chunks, 0)
-            return ret
+            # if there are still unvisited chunks, skip laptime calulation
+            try:
+                chunks.index(0)
+                return 0
+            except ValueError:
+                ret: float = reduce(lambda prev, cur: prev + self.chunk_size / (cur / 3.6), chunks, 0)
+                return ret
 
         ret = {
             'sessionTime': session_time,
