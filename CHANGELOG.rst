@@ -2,6 +2,18 @@ Changelog
 =========
 
 
+v0.6.2 (2023-01-14)
+-------------------
+
+Changes
+~~~~~~~
+- Release via github actions (#53) [mpapenbr]
+
+Other
+~~~~~
+- Chore: bump dependencies, updated link in doc. [mpapenbr]
+
+
 v0.6.1 (2023-01-14)
 -------------------
 
