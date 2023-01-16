@@ -37,6 +37,6 @@ pywin32-ctypes==0.2.0
 PyYAML==6.0
 tomli==2.0.1
 tox==4.2.8
-txaio==22.2.1
+txaio==23.1.1
 urllib3==1.26.14
 virtualenv==20.17.1
