@@ -3,3 +3,4 @@ autobahn>=22
 certifi
 urllib3
 pyirsdk
+semver

@@ -67,7 +67,9 @@ setup(
         'click>=8',
         'autobahn==22.12.1',
         'certifi',
-        "pyirsdk"
+        "pyirsdk",
+        "semver",
+        "urllib3"
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
