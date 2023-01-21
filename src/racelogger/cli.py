@@ -24,6 +24,7 @@ import racelogger.testcon.testloop as testloop
 from racelogger import __version__
 from racelogger.config import Config
 from racelogger.testcon.ping import ping as testPing
+from racelogger.util.versioncheck import check_for_racelogger_updates
 
 
 @click.command()
@@ -80,6 +81,7 @@ def cli(ctx, config, url, realm, verbose):
     ctx.obj['realm'] = realm
     levels = ['info', 'debug', 'trace']
     ctx.obj['logLevel'] = levels[min(verbose, len(levels)-1)]
+    check_for_racelogger_updates()
 
 
 # @cli.command()
