@@ -101,11 +101,15 @@ def test(ctx, user, password, maxtime):
 
 # @cli.command(context_settings=CONTEXT_SETTINGS)
 @cli.command
-@click.option('--speedmap', help='interval (in seconds) for sending the speedmap', type=int, show_default=True, default=60)
 @click.pass_context
-def ping(ctx, speedmap):
-    click.echo(f"pinging url={ctx.obj['url']} with logLevel {ctx.obj['logLevel']}")
-    testPing()
+def ping(ctx):
+    click.echo(f"testing connection to url={ctx.obj['url']} with logLevel {ctx.obj['logLevel']}")
+    testPing(
+        url=ctx.obj['url'],
+        realm=ctx.obj['realm'],
+        logLevel=ctx.obj['logLevel'],
+
+    )
 
 
 @cli.command()
