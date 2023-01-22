@@ -24,7 +24,9 @@ Overview
 
 .. end-badges
 
-Racelogger for iRacelog
+Racelogger is the data provider for the `iRacelog <https://github.com/mpapenbr/iracelog-documentation>`_ project. 
+The Racelogger reads data from the local iRacing instance via telemetry API using `pyirsdk <https://github.com/kutu/pyirsdk>`_. 
+After some preprocessing and additional calculations the data is sent to the backend for further processing.
 
 * Free software: Apache Software License 2.0
 
