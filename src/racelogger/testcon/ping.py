@@ -6,6 +6,8 @@ import txaio
 from autobahn.asyncio.wamp import ApplicationRunner
 from autobahn.asyncio.wamp import ApplicationSession
 
+from racelogger.util.versioncheck import check_server_version
+
 
 class PingSession(ApplicationSession):
 
@@ -18,6 +20,7 @@ class PingSession(ApplicationSession):
         try:
             version_info = await self.call("racelog.public.get_version")
             self.log.info(f"Backend service-manager responds with version: {version_info['ownVersion']}")
+            self.log.info(f"Compatible with this racelogger version: {check_server_version(version_info['ownVersion'])}")
 
         except Exception as e:
 

@@ -25,6 +25,8 @@ from racelogger.processing.session import SessionManifest
 from racelogger.processing.subprocessors import Subprocessors
 from racelogger.util.utils import collect_event_info
 from racelogger.util.utils import collect_track_info
+from racelogger.util.versioncheck import check_server_version
+from racelogger.util.versioncheck import __required_backend_version__
 
 
 class RecordingSession(ApplicationSession):
@@ -41,6 +43,13 @@ class RecordingSession(ApplicationSession):
         return self.config.extra['password']
 
     async def onJoin(self, details):
+        version_info = await self.call("racelog.public.get_version")
+        if check_server_version(version_info['ownVersion']) == False:
+            self.log.error(f"Required server version: >= {__required_backend_version__}")
+            self.log.error(f"Reported server version: {version_info['ownVersion']}")
+            self.log.error(f"Aborting")
+            self.leave()
+            return
         state = await self._wait_for_iracing()
         self.log.info(f"state is {state}")
 
