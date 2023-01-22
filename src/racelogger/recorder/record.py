@@ -25,8 +25,8 @@ from racelogger.processing.session import SessionManifest
 from racelogger.processing.subprocessors import Subprocessors
 from racelogger.util.utils import collect_event_info
 from racelogger.util.utils import collect_track_info
-from racelogger.util.versioncheck import check_server_version
 from racelogger.util.versioncheck import __required_backend_version__
+from racelogger.util.versioncheck import check_server_version
 
 
 class RecordingSession(ApplicationSession):
