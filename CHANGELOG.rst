@@ -2,6 +2,23 @@ Changelog
 =========
 
 
+v0.7.0 (2023-01-22)
+-------------------
+
+New
+~~~
+- Check compatibility with server (#77) [mpapenbr]
+- Connection test. [mpapenbr]
+
+  Fixes #90
+- Check for updates. [mpapenbr]
+
+Other
+~~~~~
+- Chore: fixed import order. [mpapenbr]
+- Doc: brief general purpose of this module. [mpapenbr]
+
+
 v0.6.2 (2023-01-14)
 -------------------
 
