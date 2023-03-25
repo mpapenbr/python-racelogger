@@ -88,13 +88,16 @@ class RecordingSession(ApplicationSession):
             else:
                 return (1-entry + exit) * self.track_info['trackLength']
 
-        self.track_info['pit'] = {
-            'entry': car_proc.pit_boundaries.pit_entry_boundary.middle,
-            'exit': car_proc.pit_boundaries.pit_exit_boundary.middle,
-            'laneLength': pit_lane_length(
-                car_proc.pit_boundaries.pit_entry_boundary.middle,
-                car_proc.pit_boundaries.pit_exit_boundary.middle)
-        }
+        lane_Length = pit_lane_length(
+            car_proc.pit_boundaries.pit_entry_boundary.middle,
+            car_proc.pit_boundaries.pit_exit_boundary.middle)
+        # set pit data only if a lane length was computed
+        if lane_Length != self.track_info['trackLength']:
+            self.track_info['pit'] = {
+                'entry': car_proc.pit_boundaries.pit_entry_boundary.middle,
+                'exit': car_proc.pit_boundaries.pit_exit_boundary.middle,
+                'laneLength': lane_Length
+            }
 
         await self.call("racelog.dataprovider.store_event_extra_data", state.eventKey, {'track': self.track_info})
         await self.call("racelog.dataprovider.remove_provider", state.eventKey)
