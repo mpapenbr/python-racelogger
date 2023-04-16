@@ -10,7 +10,7 @@ from racelogger import __version__ as racelogger_version
 __required_backend_version__ = '0.6.0'
 
 
-def required_server_server():
+def required_server_version():
     return __required_backend_version__
 
 
