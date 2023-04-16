@@ -65,7 +65,7 @@ setup(
     python_requires='>=3.10',
     install_requires=[
         'click>=8',
-        'autobahn==22.12.1',
+        'autobahn==23.1.2',
         'certifi',
         "pyirsdk",
         "semver",
