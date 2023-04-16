@@ -10,6 +10,10 @@ from racelogger import __version__ as racelogger_version
 __required_backend_version__ = '0.6.0'
 
 
+def required_server_server():
+    return __required_backend_version__
+
+
 def check_for_racelogger_updates():
     """reads current released version from git repo and prints out update info if newer version exists"""
     http = urllib3.PoolManager()
