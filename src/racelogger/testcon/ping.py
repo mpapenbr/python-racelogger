@@ -6,11 +6,11 @@ import txaio
 from autobahn.asyncio.wamp import ApplicationRunner
 from autobahn.asyncio.wamp import ApplicationSession
 
-from racelogger.util.versioncheck import check_server_version, required_server_version
+from racelogger.util.versioncheck import check_server_version
+from racelogger.util.versioncheck import required_server_version
 
 
 class PingSession(ApplicationSession):
-
     def onConnect(self):
         self.log.info("Client connecting.")
         self.join(self.config.realm)
@@ -19,13 +19,18 @@ class PingSession(ApplicationSession):
         self.log.info("Connected. Get version")
         try:
             version_info = await self.call("racelog.public.get_version")
-            self.log.info(f"Backend service-manager responds with version: {version_info['ownVersion']}")
-            self.log.info(f"Compatible with this racelogger version: {check_server_version(version_info['ownVersion'])}")
-            if check_server_version(version_info['ownVersion']) == False:
-                self.log.error(f"***Server not compatible***: minimum required version {required_server_version()}")
+            self.log.info(
+                f"Backend service-manager responds with version: {version_info['ownVersion']}"
+            )
+            self.log.info(
+                f"Compatible with this racelogger version: {check_server_version(version_info['ownVersion'])}"
+            )
+            if check_server_version(version_info["ownVersion"]) == False:
+                self.log.error(
+                    f"***Server not compatible***: minimum required version {required_server_version()}"
+                )
 
         except Exception as e:
-
             self.log.error("Got exception {e}", e=e)
         self.leave()
 
@@ -38,8 +43,7 @@ class PingSession(ApplicationSession):
         asyncio.get_event_loop().stop()
 
 
-def ping(url: str = None, realm: str = None, logLevel: str = 'info', extra=None):
-
+def ping(url: str = None, realm: str = None, logLevel: str = "info", extra=None):
     txaio.start_logging(level=logLevel)
     # we need this for letsencrypt certs.
     # see https://community.letsencrypt.org/t/help-thread-for-dst-root-ca-x3-expiration-september-2021/149190/1213
