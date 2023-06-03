@@ -2,6 +2,78 @@ Changelog
 =========
 
 
+v0.8.0 (2023-06-03)
+-------------------
+
+Changes
+~~~~~~~
+- Report required version on ping cmd. [mpapenbr]
+
+Fix
+~~~
+- Send pit lane info only if pit stops were detected. [mpapenbr]
+
+Other
+~~~~~
+- Chore: Upgrade to Python 3.11 Fixes #89. [mpapenbr]
+- Chore: changed dependabot config. [mpapenbr]
+- Chore: bump versions. [mpapenbr]
+- Build(deps): bump pytest from 7.2.1 to 7.3.0. [dependabot[bot]]
+
+  Bumps [pytest](https://github.com/pytest-dev/pytest) from 7.2.1 to 7.3.0.
+  - [Release notes](https://github.com/pytest-dev/pytest/releases)
+  - [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst)
+  - [Commits](https://github.com/pytest-dev/pytest/compare/7.2.1...7.3.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: pytest
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+  ...
+- Build(deps): bump pytest from 7.2.0 to 7.2.1. [dependabot[bot]]
+
+  Bumps [pytest](https://github.com/pytest-dev/pytest) from 7.2.0 to 7.2.1.
+  - [Release notes](https://github.com/pytest-dev/pytest/releases)
+  - [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst)
+  - [Commits](https://github.com/pytest-dev/pytest/compare/7.2.0...7.2.1)
+
+  ---
+  updated-dependencies:
+  - dependency-name: pytest
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+  ...
+- Build(deps): bump pyinstaller-hooks-contrib from 2022.14 to 2023.0.
+  [dependabot[bot]]
+
+  Bumps [pyinstaller-hooks-contrib](https://github.com/pyinstaller/pyinstaller-hooks-contrib) from 2022.14 to 2023.0.
+  - [Release notes](https://github.com/pyinstaller/pyinstaller-hooks-contrib/releases)
+  - [Changelog](https://github.com/pyinstaller/pyinstaller-hooks-contrib/blob/master/CHANGELOG.rst)
+  - [Commits](https://github.com/pyinstaller/pyinstaller-hooks-contrib/compare/2022.14...2023.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: pyinstaller-hooks-contrib
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+  ...
+- Build(deps): bump cryptography from 39.0.0 to 39.0.2.
+  [dependabot[bot]]
+
+  Bumps [cryptography](https://github.com/pyca/cryptography) from 39.0.0 to 39.0.2.
+  - [Release notes](https://github.com/pyca/cryptography/releases)
+  - [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst)
+  - [Commits](https://github.com/pyca/cryptography/compare/39.0.0...39.0.2)
+
+  ---
+  updated-dependencies:
+  - dependency-name: cryptography
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+  ...
+
+
 v0.7.0 (2023-01-22)
 -------------------
 
