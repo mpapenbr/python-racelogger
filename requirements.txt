@@ -32,7 +32,7 @@ pyproject_api==1.5.1
 pytest==7.3.1
 pywin32-ctypes==0.2.0
 PyYAML==6.0
-semver==3.0.0
+semver==3.0.1
 tox==4.5.2
 txaio==23.1.1
 urllib3==2.0.2
